@@ -1,6 +1,7 @@
 import streamlit as st
 from data.srr_preprocess_mt24 import *
 import pandas as pd
+from data.dataviz import *
 
 # Check if 'page' is in session state, if not initialize it
 if 'page' not in st.session_state:
