@@ -15,8 +15,8 @@ if st.session_state.page == "srr":
     if st.button("MT24"):
         st.session_state.page = "mt24"  # Change page state
 
-    if st.button("Other Option"):  # Example for another option
-        st.session_state.page = "other"  # Change to another page
+    if st.button("MT20"):  # Example for another option
+        st.session_state.page = "mt20"  # Change to another page
 
 # Logic for MT24 Page
 if st.session_state.page == "mt24":
