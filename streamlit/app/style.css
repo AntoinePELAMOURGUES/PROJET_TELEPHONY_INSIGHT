@@ -1,0 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+IN:wght@100..400&display=swap" rel="stylesheet');
+
+html,
+body,
+[class*="css"] {
+    font-family: 'Playwrite IN', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: #d8a824;
+}
