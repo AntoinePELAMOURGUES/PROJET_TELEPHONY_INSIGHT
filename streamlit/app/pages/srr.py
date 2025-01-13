@@ -31,7 +31,7 @@ if st.session_state.page == "mt24" or st.session_state.page == "mt20":
             df = preprocess_data(uploaded_file_1, uploaded_file_2)
             # Ajouter une ligne horizontale
             st.markdown("---")
-            st.write("ℹ️ La période d'analyse est du {} au {}".format(df["Date"].min(), df["Date"].max()))
+            st.write("ℹ️ La période complète de la FADET s'étend du {} au {}".format(df["Date"].min(), df["Date"].max()))
             st.markdown("---")
             st.write("📅 Vous pouvez modifier la période d'analyse ci-dessous :")
             # Ajouter un slider pour choisir la période
@@ -41,12 +41,18 @@ if st.session_state.page == "mt24" or st.session_state.page == "mt20":
             end_date = pd.to_datetime(end_date)  # Convertir en datetime
             df = df[(df["Date"] >= start_date) & (df["Date"] <= end_date)]
             st.markdown("---")
-            st.write("Filtrage sur un numéro :")
-            num = st.text_input("Numéro à filtrer :")
+            st.write("Choisissez un filtre si besoin :")
+            filter = st.selectbox("Filtrer par :", ["Sélectionner", "Correspondant", "IMEI", "IMSI", "Ville"])
             st.markdown("---")
-            st.write("Voici un aperçu des données :")
-            if num:
-                df = df[(df["Correspondant"] == num)]
+            # Vérifier si un filtre a été sélectionné
+            if filter != "Sélectionner":
+                value_filter = st.text_input("Valeur à filtrer :")
+                if value_filter:
+                    # Appliquer le filtre en fonction de la sélection
+                    df = df[df[filter].astype(str) == value_filter]
+                    st.write(f"Voici un aperçu des données ayant pour filtre {filter} : {value_filter}")
+            else:
+                st.write("Voici un aperçu des données complètes sur la période choisie:")
             st.write(df[['Date','Abonné', 'Correspondant', "Type d'appel", 'Durée', 'Adresse', 'IMEI', 'IMSI']])
             st.markdown("---")
             st.write("Nombre de communications par correspondant:")
