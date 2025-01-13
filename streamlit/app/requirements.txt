@@ -7,3 +7,4 @@ xlrd
 plotly
 pyproj
 geopy
+st-clickable-images

@@ -148,7 +148,7 @@ def scatter_plot_ville(df):
 
 geolocator = Photon(user_agent="my_geocoder")
 
-geocode_with_delay = RateLimiter(geolocator.geocode, min_delay_seconds=1)
+geocode_with_delay = RateLimiter(geolocator.geocode, min_delay_seconds=0.5)
 
 # Step 4: Define a function to get coordinates
 def get_coordinates(address):

@@ -3,13 +3,13 @@ from data.orre_preprocess_mt20 import *
 import pandas as pd
 from data.dataviz import *
 
-# Check if 'page' is in session state, if not initialize it
+# Réinitialiser la page si elle est chargée
 if 'page' not in st.session_state:
-    st.session_state.page = "orange"  # Default page
+    st.session_state.page = "orange"
 
 # Page Title
 if st.session_state.page == "orange":
-    st.title("ORANGE")
+    st.title("ORANGE REUNION")
 
     st.write("Veuillez choisir le type de réquisition que vous souhaitez analyser :")
 
@@ -20,8 +20,9 @@ if st.session_state.page == "orange":
         st.session_state.page = "mt20"  # Change to another page
 
 # Logic for MT24 Page
-if st.session_state.page == "mt20":
-    st.write("Veuillez charger votre fichier csv :")
+if st.session_state.page == "mt24" or st.session_state.page == "mt20":
+
+    st.write("Veuillez charger votre fichiers csv :")
 
     uploaded_file_1 = st.file_uploader("Fichier contenant les communications", type="csv")
 
@@ -84,5 +85,10 @@ if st.session_state.page == "mt20":
         st.write("🌍 Cartographie des relais déclenchés :")
         adresse_co['Coordinates'] = adresse_co['Adresse'].apply(get_coordinates)
         adresse_co[['Latitude', 'Longitude']] = pd.DataFrame(adresse_co['Coordinates'].tolist(), index=adresse_co.index)
-        carto = carto_adresse(adresse_co)
+        carto = carto_orre(adresse_co)
         st.plotly_chart(carto)
+        if st.button("Retour au menu principal"):
+            for key in list(st.session_state.keys()):
+                del st.session_state[key]  # Supprime toutes les clés dans session_state
+                st.switch_page("pages/menu.py")  # Retour au menu principal
+

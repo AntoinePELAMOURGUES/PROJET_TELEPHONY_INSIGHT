@@ -3,8 +3,10 @@ import streamlit as st
 # Setup web page
 st.set_page_config(
     page_title="Telephony DataViz App",
-    page_icon="./streamlit/app/img/Icone.PNG",  # Path as string
+    page_icon="/home/antoine/telephony_insight_project/streamlit/app/img/Icone.PNG",  # Path as string
 )
+
+
 
 # Importer la police et définir le style CSS
 st.markdown("""
@@ -17,21 +19,25 @@ st.markdown("""
         font-weight: 500;
         color: #d8a824;
     }
+
+    /* Centrer le bouton */
+    div.stButton > button {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
     </style>
 """, unsafe_allow_html=True)
 
 # Title and logo
 st.markdown("<h1 style='text-align: center;'>API DE VISUALISATION DES DONNÉES TELEPHONIQUES</h1>", unsafe_allow_html=True)
 st.markdown('---')
-st.image("./streamlit/app/img/LOGO.PNG", width=1100)
+st.image("/home/antoine/telephony_insight_project/streamlit/app/img/LOGO.PNG", width=800)
 st.markdown('---')
-st.write('Created by Antoine PELAMOURGUES')
 
-# Sidebar for operator selection
-st.sidebar.write("CHOIX DE L'OPÉRATEUR:")
-if st.sidebar.button("SRR"):
-    st.switch_page("pages/srr.py")
-if st.sidebar.button("ORANGE REUNION"):
-    st.switch_page("pages/orange.py")
-if st.sidebar.button("TELCO"):
-    st.switch_page("pages/telco.py")
+# Bouton centré
+start_button = st.button("Démarrer l'application")
+if start_button:
+    st.switch_page("pages/menu.py")
+
+

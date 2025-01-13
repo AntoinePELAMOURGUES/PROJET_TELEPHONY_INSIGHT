@@ -3,9 +3,9 @@ from data.srr_preprocess_mt24 import *
 import pandas as pd
 from data.dataviz import *
 
-# Check if 'page' is in session state, if not initialize it
+# Réinitialiser la page si elle est chargée
 if 'page' not in st.session_state:
-    st.session_state.page = "srr"  # Default page
+    st.session_state.page = "srr"
 
 # Page Title
 if st.session_state.page == "srr":
@@ -20,7 +20,7 @@ if st.session_state.page == "srr":
         st.session_state.page = "mt20"  # Change to another page
 
 # Logic for MT24 Page
-if st.session_state.page == "mt24":
+if st.session_state.page == "mt24" or st.session_state.page == "mt20":
     st.write("Veuillez charger vos 2 fichiers xls :")
 
     uploaded_file_1 = st.file_uploader("Fichier contenant les communications", type="xls")
@@ -85,3 +85,7 @@ if st.session_state.page == "mt24":
         st.write("🌍 Cartographie des relais déclenchés :")
         carto = carto_adresse(df)
         st.plotly_chart(carto)
+        if st.button("Retour au menu principal"):
+            for key in list(st.session_state.keys()):
+                del st.session_state[key]  # Supprime toutes les clés dans session_state
+                st.switch_page("pages/menu.py")  # Retour au menu principal
