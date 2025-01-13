@@ -172,7 +172,7 @@ def carto_adresse(df):
         df_merged = adress_count.merge(df, how = 'left', left_on="Adresse", right_on='Adresse')
         # Appliquer la fonction sur les colonnes 'Coordonnée X' et 'Coordonnée Y'
         df_merged[['Latitude', 'Longitude']] = df_merged.apply(lambda row: gauss_laborde_to_wgs84(row['Coordonnée X'], row['Coordonnée Y']), axis=1, result_type='expand')
-        fig = px.scatter_map(df_merged, lat="Latitude", lon="Longitude", color="Pourcentage", size="Nombre de déclenchement",
+        fig = px.scatter_map(df_merged, lat="Latitude", lon="Longitude", color="Pourcentage", size="Nombre de déclenchement", hover_name="Adresse",
                     color_continuous_scale=px.colors.sequential.Bluered, size_max=15, zoom=10,
                     map_style="carto-positron")
         return fig
@@ -203,7 +203,7 @@ def get_coordinates(address):
 
 def carto_orre(df):
     try:
-        fig = px.scatter_map(df, lat="Latitude", lon="Longitude", color="Pourcentage", size="Nombre de déclenchement",
+        fig = px.scatter_map(df, lat="Latitude", lon="Longitude", color="Pourcentage", size="Nombre de déclenchement", hover_name="Adresse",
                         color_continuous_scale=px.colors.sequential.Bluered, size_max=15, zoom=10,
                         map_style="carto-positron")
         return fig
