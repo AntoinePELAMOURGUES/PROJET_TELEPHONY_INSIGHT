@@ -1,0 +1,9 @@
+[theme]
+base = 'dark'
+font = 'monospace'
+
+[client]
+showSidebarNavigation = false
+
+[browser]
+showSidebarNavigation = false
