@@ -153,6 +153,8 @@ def adresse_count(df):
         adresse_counts = df['Adresse'].value_counts().reset_index()
         # Renommer les colonnes pour plus de clarté
         adresse_counts.columns = ['Adresse', 'Nombre de déclenchement']
+        # Supprimer les lignes sans adresse
+        adresse_counts = adresse_counts.dropna(axis=0)
         # Calculer le nombre total de contacts
         total_contacts = adresse_counts['Nombre de déclenchement'].sum()
         # Calculer le pourcentage et arrondir à un chiffre après la virgule
