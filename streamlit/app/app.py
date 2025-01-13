@@ -3,7 +3,7 @@ import streamlit as st
 # Setup web page
 st.set_page_config(
     page_title="Telephony DataViz App",
-    page_icon="/home/antoine/telephony_insight_project/streamlit/app/img/Icone.PNG",  # Path as string
+    page_icon="./streamlit/app/img/Icone.PNG",  # Path as string
 )
 
 
@@ -32,7 +32,7 @@ st.markdown("""
 # Title and logo
 st.markdown("<h1 style='text-align: center;'>API DE VISUALISATION DES DONNÉES TELEPHONIQUES</h1>", unsafe_allow_html=True)
 st.markdown('---')
-st.image("/home/antoine/telephony_insight_project/streamlit/app/img/LOGO.PNG", width=800)
+st.image("./streamlit/app/img/LOGO.PNG", width=800)
 st.markdown('---')
 
 # Bouton centré
