@@ -30,7 +30,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Title and logo
-st.markdown("<h1 style='text-align: center;'>API DE VISUALISATION DES DONNÉES TELEPHONIQUES</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>Données Téléphoniques de La Réunion : Visualisez, Analysez, Décidez</h1>", unsafe_allow_html=True)
 st.markdown('---')
 st.image("./streamlit/app/img/LOGO.PNG", width=800)
 st.markdown('---')
