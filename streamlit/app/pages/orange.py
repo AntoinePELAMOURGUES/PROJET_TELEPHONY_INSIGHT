@@ -98,7 +98,6 @@ if st.session_state.page == "mt24" or st.session_state.page == "mt20":
             st.markdown("---")
             st.write("🌍 Cartographie des relais déclenchés :")
             adresse_co['Coordinates'] = adresse_co['Adresse'].apply(geocode_address_datagouv)
-            # adresse_co['Coordinates'] = adresse_co['Adresse'].apply(get_coordinates)
             adresse_co[['Latitude', 'Longitude']] = pd.DataFrame(adresse_co['Coordinates'].tolist(), index=adresse_co.index)
             carto = carto_orre(adresse_co)
             # Afficher les adresses non trouvées sous forme de puces
@@ -108,7 +107,7 @@ if st.session_state.page == "mt24" or st.session_state.page == "mt20":
                     st.markdown(f"• {address}")
             st.plotly_chart(carto)
             if st.button("Retour au menu principal"):
-                st.experimental_rerun()
+                st.rerun()
                 st.switch_page("pages/menu.py")  # Retour au menu principal
         except Exception as e:
             st.error(f"Une erreur s'est produite lors du traitement du fichier : {e}")

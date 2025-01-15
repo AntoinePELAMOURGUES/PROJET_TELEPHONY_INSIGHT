@@ -6,6 +6,5 @@ pandas
 xlrd
 plotly
 pyproj
-geopy
 st-clickable-images
 requests

@@ -3,8 +3,6 @@ import numpy as np
 import plotly.graph_objects as go
 import plotly.express as px
 from pyproj import Proj, Transformer
-from geopy.geocoders import Photon
-from geopy.extra.rate_limiter import RateLimiter
 import requests
 
 # Fonction pour convertir Gauss-Laborde à WGS84
@@ -189,21 +187,6 @@ def scatter_plot_ville(df):
         print(f"Erreur lors de la création du scatter plot des villes: {e}")
         return go.Figure()
 
-geolocator = Photon(user_agent="my_geocoder")
-
-geocode_with_delay = RateLimiter(geolocator.geocode, min_delay_seconds=0.5)
-
-# Liste pour stocker les adresses non trouvées
-non_found_addresses = []
-# Fonction pour obtenir les coordonnées géographiques
-def get_coordinates(address):
-    try:
-        location = geocode_with_delay(address)
-        return (location.latitude, location.longitude) if location else non_found_addresses.append(address)
-    except Exception as e:
-        print(f"Erreur lors de la géocodage de l'adresse {address}: {e}")
-        return (None, None)
-
 
 def carto_orre(df):
     try:
@@ -215,6 +198,8 @@ def carto_orre(df):
         print(f"Erreur lors de la création de la carte ORRE: {e}")
         return go.Figure()
 
+# Liste pour stocker les adresses non trouvées
+non_found_addresses = []
 def geocode_address_datagouv(address):
     try:
         # URL du service de géocodage
