@@ -192,6 +192,8 @@ geolocator = Photon(user_agent="my_geocoder")
 
 geocode_with_delay = RateLimiter(geolocator.geocode, min_delay_seconds=0.5)
 
+# Liste pour stocker les adresses non trouvées
+non_found_addresses = []
 # Fonction pour obtenir les coordonnées géographiques
 def get_coordinates(address):
     try:
@@ -199,7 +201,10 @@ def get_coordinates(address):
         return (location.latitude, location.longitude) if location else (None, None)
     except Exception as e:
         print(f"Erreur lors de la géocodage de l'adresse {address}: {e}")
+        # Ajouter l'adresse à la liste des non trouvées
+        non_found_addresses.append(address)
         return (None, None)
+
 
 def carto_orre(df):
     try:

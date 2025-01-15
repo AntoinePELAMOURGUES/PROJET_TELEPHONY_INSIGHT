@@ -100,6 +100,11 @@ if st.session_state.page == "mt24" or st.session_state.page == "mt20":
             adresse_co['Coordinates'] = adresse_co['Adresse'].apply(get_coordinates)
             adresse_co[['Latitude', 'Longitude']] = pd.DataFrame(adresse_co['Coordinates'].tolist(), index=adresse_co.index)
             carto = carto_orre(adresse_co)
+            # Afficher les adresses non trouvées sous forme de puces
+            if non_found_addresses:
+                st.write("🔴 Adresses non trouvées :")
+                for address in non_found_addresses:
+                    st.markdown(f"• {address}")
             st.plotly_chart(carto)
             if st.button("Retour au menu principal"):
                 for key in list(st.session_state.keys()):
