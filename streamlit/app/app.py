@@ -1,5 +1,5 @@
 import streamlit as st
-from style import *
+
 
 # Setup web page
 st.set_page_config(
