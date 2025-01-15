@@ -8,3 +8,4 @@ plotly
 pyproj
 geopy
 st-clickable-images
+requests

@@ -5,6 +5,7 @@ import plotly.express as px
 from pyproj import Proj, Transformer
 from geopy.geocoders import Photon
 from geopy.extra.rate_limiter import RateLimiter
+import requests
 
 # Fonction pour convertir Gauss-Laborde à WGS84
 def gauss_laborde_to_wgs84(x, y):
@@ -213,3 +214,35 @@ def carto_orre(df):
     except Exception as e:
         print(f"Erreur lors de la création de la carte ORRE: {e}")
         return go.Figure()
+
+def geocode_address_datagouv(address):
+    try:
+        # URL du service de géocodage
+        url = "https://data.geopf.fr/geocodage/search"
+
+        # Paramètres de la requête
+        params = {
+            'q': address,
+            'limit': 1  # Limiter à 1 résultat
+        }
+
+        # Envoyer la requête GET
+        response = requests.get(url, params=params)
+
+        # Vérifier si la requête a réussi
+        if response.status_code == 200:
+            data = response.json()
+            # Vérifier si des résultats sont retournés
+            if data and 'features' in data and len(data['features']) > 0:
+                # Extraire les coordonnées
+                coords = data['features'][0]['geometry']['coordinates']
+                return (coords[1], coords[0])  # Retourner (latitude, longitude)
+            else:
+                non_found_addresses.append(address)
+                return (None, None)  # Pas de résultats trouvés
+        else:
+            print(f"Erreur lors de la requête : {response.status_code}")
+            return (None, None)
+    except Exception as e:
+        print(f"Erreur lors du géocodage de l'adresse '{address}': {e}")
+        return (None, None)

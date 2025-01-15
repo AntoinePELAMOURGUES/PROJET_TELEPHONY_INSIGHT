@@ -97,7 +97,8 @@ if st.session_state.page == "mt24" or st.session_state.page == "mt20":
             st.plotly_chart(scatter)
             st.markdown("---")
             st.write("🌍 Cartographie des relais déclenchés :")
-            adresse_co['Coordinates'] = adresse_co['Adresse'].apply(get_coordinates)
+            adresse_co['Coordinates'] = adresse_co['Adresse'].apply(geocode_address_datagouv)
+            # adresse_co['Coordinates'] = adresse_co['Adresse'].apply(get_coordinates)
             adresse_co[['Latitude', 'Longitude']] = pd.DataFrame(adresse_co['Coordinates'].tolist(), index=adresse_co.index)
             carto = carto_orre(adresse_co)
             # Afficher les adresses non trouvées sous forme de puces
