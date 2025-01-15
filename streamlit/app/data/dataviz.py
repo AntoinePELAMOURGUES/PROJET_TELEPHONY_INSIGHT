@@ -198,9 +198,10 @@ def carto_orre(df):
         print(f"Erreur lors de la création de la carte ORRE: {e}")
         return go.Figure()
 
-# Liste pour stocker les adresses non trouvées
-non_found_addresses = []
+
+
 def geocode_address_datagouv(address):
+    non_found_addresses = []
     try:
         # URL du service de géocodage
         url = "https://data.geopf.fr/geocodage/search"
