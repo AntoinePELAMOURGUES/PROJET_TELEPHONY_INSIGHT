@@ -237,9 +237,9 @@ def carto_adresse_tcoi(df):
     try:
         fig = px.scatter_map(df,
                             lat="Latitude", lon="Longitude",
-                            color="Percentage", size="Count",
+                            color="Pourcentage", size="Nombre de déclenchement",
                             hover_name="Adresse", color_continuous_scale=px.colors.sequential.Bluered,
-                            size_max=100, zoom=10,
+                            size_max=60, zoom=10,
                             map_style="carto-positron")
         return fig
     except Exception as e:
