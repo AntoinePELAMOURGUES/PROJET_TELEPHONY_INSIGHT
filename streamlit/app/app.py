@@ -1,4 +1,5 @@
 import streamlit as st
+from style import *
 
 # Setup web page
 st.set_page_config(
@@ -7,27 +8,9 @@ st.set_page_config(
 )
 
 
-
-# Importer la police et définir le style CSS
-st.markdown("""
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playwrite+IN:wght@100..400&display=swap');
-
-    html, body, [class*="css"] {
-        font-family: 'Playwrite IN', sans-serif;
-        font-size: 18px;
-        font-weight: 500;
-        color: #d8a824;
-    }
-
-    /* Centrer le bouton */
-    div.stButton > button {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    </style>
-""", unsafe_allow_html=True)
+# Charger le CSS
+with open("style.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 # Title and logo
 st.markdown("<h1 style='text-align: center;'>Données Téléphoniques de La Réunion : Visualisez, Analysez, Décidez</h1>", unsafe_allow_html=True)

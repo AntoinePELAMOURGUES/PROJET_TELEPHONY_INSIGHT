@@ -8,3 +8,11 @@ body,
     font-weight: 500;
     color: #d8a824;
 }
+
+/* Style pour le titre */
+h1 {
+    color: #d8a824;
+    /* Couleur du titre */
+    font-family: 'Playwrite IN', sans-serif;
+    /* Police du titre */
+}
