@@ -107,9 +107,8 @@ if st.session_state.page == "mt24" or st.session_state.page == "mt20":
                     st.markdown(f"• {address}")
             st.plotly_chart(carto)
             if st.button("Retour au menu principal"):
-                for key in list(st.session_state.keys()):
-                    del st.session_state[key]  # Supprime toutes les clés dans session_state
-                    st.switch_page("pages/menu.py")  # Retour au menu principal
+                st.experimental_rerun()
+                st.switch_page("pages/menu.py")  # Retour au menu principal
         except Exception as e:
             st.error(f"Une erreur s'est produite lors du traitement du fichier : {e}")
 
