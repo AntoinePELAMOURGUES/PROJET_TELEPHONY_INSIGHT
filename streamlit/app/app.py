@@ -29,13 +29,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Title and logo
-# Title and logo
 st.markdown("""
-    <div style='text-align: center; color: #d8a824; font-family: "Playwrite IN", sans-serif; font-size: 24px;'>
+    <div style='text-align: center; color: #d8a824; font-family: "Playwrite IN", monospace; font-size: 24px;'>
         <h1>
             Données Téléphoniques 🇷🇪<br>
-            <span style='color: #d8a824;'>Visualisez</span> 👀,<br>
-            <span style='color: #d8a824;'>Analysez</span> 📈,<br>
+            <span style='color: #d8a824;'>Visualisez</span> 👀<br>
+            <span style='color: #d8a824;'>Analysez</span> 📈<br>
             <span style='color: #d8a824;'>Décidez</span> ✔️
         </h1>
     </div>
