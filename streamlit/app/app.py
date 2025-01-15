@@ -35,7 +35,7 @@ st.markdown("""
             Données Téléphoniques 🇷🇪<br>
             <span style='color: #d8a824;'>Visualisez</span> 👀<br>
             <span style='color: #d8a824;'>Analysez</span> 📈<br>
-            <span style='color: #d8a824;'> Décidez</span> ✔️
+            <span style='color: #d8a824;'>&nbsp;Décidez</span> ✔️
         </h1>
     </div>
 """, unsafe_allow_html=True)
