@@ -172,7 +172,7 @@ def carto_adresse(df):
         # Appliquer la fonction sur les colonnes 'Coordonnée X' et 'Coordonnée Y'
         df_merged[['Latitude', 'Longitude']] = df_merged.apply(lambda row: gauss_laborde_to_wgs84(row['Coordonnée X'], row['Coordonnée Y']), axis=1, result_type='expand')
         fig = px.scatter_map(df_merged, lat="Latitude", lon="Longitude", color="Pourcentage", size="Nombre de déclenchement", hover_name="Adresse",
-                    color_continuous_scale=px.colors.sequential.Bluered, size_max=40, zoom=10,
+                    color_continuous_scale=px.colors.sequential.Bluered, size_max=60, zoom=10,
                     map_style="carto-positron")
         return fig
     except Exception as e:
@@ -191,7 +191,7 @@ def scatter_plot_ville(df):
 def carto_orre(df):
     try:
         fig = px.scatter_map(df, lat="Latitude", lon="Longitude", color="Pourcentage", size="Nombre de déclenchement", hover_name="Adresse",
-                        color_continuous_scale=px.colors.sequential.Bluered, size_max=40, zoom=10,
+                        color_continuous_scale=px.colors.sequential.Bluered, size_max=60, zoom=10,
                         map_style="carto-positron")
         return fig
     except Exception as e:
