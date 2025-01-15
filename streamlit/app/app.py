@@ -25,16 +25,11 @@ st.markdown("""
         margin-right: auto;
     }
 
-    /* Style pour le titre */
-    h1 {
-        color: #d8a824; /* Couleur du titre */
-        font-family: 'Playwrite IN', sans-serif; /* Police du titre */
-    }
     </style>
 """, unsafe_allow_html=True)
 
 # Title and logo
-st.markdown("<h1 style='text-align: center;'>:#d8a824[Données Téléphoniques de La Réunion : Visualisez, Analysez, Décidez]</h1>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center;'>:orange[Données Téléphoniques de La Réunion :flag-re: : Visualisez :eyes:, Analysez :chart_with_upwards_trend:, Décidez 	:heavy_check_mark:]</h2>", unsafe_allow_html=True)
 st.markdown('---')
 st.image("./streamlit/app/img/LOGO.PNG", width=800)
 st.markdown('---')
