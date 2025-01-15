@@ -170,32 +170,34 @@ def scatter_plot_ville(df):
        return go.Figure()  # Retourner une figure vide en cas d'erreur
 
 
+# Liste pour stocker les adresses non trouvées
+non_found_addresses = []
 
 # Fonction pour géocoder une adresse via un service externe (API)
 def geocode_address_datagouv(address):
     try:
-        # Liste pour stocker les adresses non trouvées (à utiliser dans geocode_address_datagouv)
-        non_found_addresses = []
         url = "https://data.geopf.fr/geocodage/search"
         params = {
             'q': address,
             'limit': 1  # Limiter à 1 résultat
         }
         response = requests.get(url, params=params)
+
         if response.status_code == 200:
             data = response.json()
             if data and 'features' in data and len(data['features']) > 0:
                 coords = data['features'][0]['geometry']['coordinates']
-                coord =  (coords[1], coords[0])  # Retourner (latitude, longitude)
+                return (coords[1], coords[0])  # Retourner (latitude, longitude)
             else:
                 non_found_addresses.append(address)  # Ajouter à la liste si non trouvé
-                coord = (None, None)
-            return coord, non_found_addresses
+                return (None, None)
         else:
             print(f"Erreur lors de la requête : {response.status_code}")
+            non_found_addresses.append(address)  # Ajouter à la liste si erreur
             return (None, None)
     except Exception as e:
         print(f"Erreur lors du géocodage de l'adresse '{address}': {e}")
+        non_found_addresses.append(address)  # Ajouter à la liste si exception
         return (None, None)
 
 # Créer une carte des adresses pour l'opérateur SRR avec les coordonnées converties depuis Gauss-Laborde à WGS84.
@@ -352,10 +354,9 @@ def visualisation_data(df, operateur: str):
         st.plotly_chart(carto)
 
     elif operateur == 'ORRE':
-        adresse_co['Coordinates'], non_found_addresses = adresse_co['Adresse'].apply(geocode_address_datagouv)
-        # Vérifier si les coordonnées ont été trouvées avant d'ajouter les colonnes Latitude et Longitude
-        if 'Coordinates' in adresse_co.columns:
-            adresse_co[['Latitude', 'Longitude']] = pd.DataFrame(adresse_co['Coordinates'].tolist(), index=adresse_co.index)
+        adresse_co['Coordinates'] = adresse_co['Adresse'].apply(geocode_address_datagouv)
+        # Séparer les coordonnées en deux colonnes Latitude et Longitude
+        adresse_co[['Latitude', 'Longitude']] = pd.DataFrame(adresse_co['Coordinates'].tolist(), index=adresse_co.index)
         carto = carto_adresse_orre(adresse_co)
         st.plotly_chart(carto)
         st.markdown("---")
