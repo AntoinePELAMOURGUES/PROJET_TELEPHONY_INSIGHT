@@ -31,7 +31,7 @@ if st.session_state.page == "orange":
 # Logic for MT24 Page
 if st.session_state.page == "mt24" or st.session_state.page == "mt20":
 
-    st.write("Veuillez charger votre fichiers csv :")
+    st.write("Veuillez charger votre fichier csv :")
 
     uploaded_file_1 = st.file_uploader("Fichier contenant les communications", type="csv")
 
