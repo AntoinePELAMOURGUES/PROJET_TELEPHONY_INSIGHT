@@ -350,6 +350,8 @@ def visualisation_data(df, operateur: str):
         df_unique = df[['Adresse', 'Latitude', 'Longitude']].drop_duplicates()
         # Faire la jointure pour obtenir les coordonnées
         df_merged = adresse_co.merge(df_unique, on='Adresse', how='left')
+        df_merged['Latitude'] = df_merged['Latitude'].astype(float)
+        df_merged['Longitude'] = df_merged['Longitude'].astype(float)
         carto = carto_adresse_tcoi(df_merged)
         st.plotly_chart(carto)
 
