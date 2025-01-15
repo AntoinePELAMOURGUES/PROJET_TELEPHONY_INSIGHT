@@ -29,14 +29,16 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Title and logo
+# Title and logo
 st.markdown("""
-    <div style='text-align: center;'>
-        <h1 style='color: #d8a824;'>
-            Données Téléphoniques de La Réunion :flag-re: : :orange[Visualisez] :eyes:, :orange[Analysez] :chart_with_upwards_trend:, :orange[Décidez] :heavy_check_mark:
+    <div style='text-align: center; color: #d8a824; font-family: "Playwrite IN", sans-serif; font-size: 24px;'>
+        <h1>
+            Données Téléphoniques de La Réunion 🇷🇪 : <span style='color: #d8a824;'>Visualisez</span> 👀,
+            <span style='color: #d8a824;'>Analysez</span> 📈,
+            <span style='color: #d8a824;'>Décidez</span> ✔️
         </h1>
     </div>
 """, unsafe_allow_html=True)
-
 st.image("./streamlit/app/img/LOGO.PNG", width=800)
 st.markdown('---')
 
