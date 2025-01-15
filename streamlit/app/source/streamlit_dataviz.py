@@ -363,7 +363,7 @@ def visualisation_data(df, operateur: str):
                 for address in non_found_addresses:
                     st.markdown(f"• {address}")
 
-        carto = carto_adresse_srr(adresse_co)
+        carto = carto_adresse_orre(adresse_co)
         st.plotly_chart(carto)
 
    # Bouton pour retourner au menu principal
