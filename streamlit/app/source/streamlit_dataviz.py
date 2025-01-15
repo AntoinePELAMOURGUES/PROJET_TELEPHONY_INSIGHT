@@ -351,20 +351,17 @@ def visualisation_data(df, operateur: str):
 
     elif operateur == 'ORRE':
         adresse_co['Coordinates'] = adresse_co['Adresse'].apply(geocode_address_datagouv)
-
         # Vérifier si les coordonnées ont été trouvées avant d'ajouter les colonnes Latitude et Longitude
         if 'Coordinates' in adresse_co.columns:
             adresse_co[['Latitude', 'Longitude']] = pd.DataFrame(adresse_co['Coordinates'].tolist(), index=adresse_co.index)
-
-            # Afficher les adresses non trouvées sous forme de puces, si applicable
-            non_found_addresses = [address for address in adresse_co['Adresse'] if address not in adresse_co['Coordinates']]
-            if non_found_addresses:
-                st.write("🔴 Adresses non trouvées :")
-                for address in non_found_addresses:
-                    st.markdown(f"• {address}")
-
         carto = carto_adresse_orre(adresse_co)
         st.plotly_chart(carto)
+        st.markdown("---")
+        if non_found_addresses:
+            st.write("🔴 Adresses non trouvées :")
+            for address in non_found_addresses:
+                st.markdown(f"• {address}")
+            non_found_addresses = []
 
    # Bouton pour retourner au menu principal
     if st.button("Retour au menu principal"):
