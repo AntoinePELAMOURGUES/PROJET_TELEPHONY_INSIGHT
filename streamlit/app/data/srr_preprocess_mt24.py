@@ -59,7 +59,6 @@ def preprocess_data(file1, file2):
     df2['Ville']= df2['Ville'].str.replace("SAINT", "ST")
     df2['Ville']= df2['Ville'].str.replace("SAINTE", "STE")
     df2['Ville']= df2['Ville'].str.replace("L'", "")
-    df2 = df2.fillna('')
     df2['adresse_complete'] = df2['Adresse'] + " " + df2['Comp. adresse'] + " " + df2['Code postal'] + " " + df2['Ville']
     df2['adresse_complete']= df2['adresse_complete'].str.upper()
     df2['adresse_complete']= df2['adresse_complete'].str.replace(r'\s+', ' ', regex=True)
