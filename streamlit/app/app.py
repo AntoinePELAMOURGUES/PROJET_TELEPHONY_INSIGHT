@@ -33,12 +33,14 @@ st.markdown("""
 st.markdown("""
     <div style='text-align: center; color: #d8a824; font-family: "Playwrite IN", sans-serif; font-size: 24px;'>
         <h1>
-            Données Téléphoniques de La Réunion 🇷🇪 : <span style='color: #d8a824;'>Visualisez</span> 👀,
-            <span style='color: #d8a824;'>Analysez</span> 📈,
+            Données Téléphoniques de La Réunion 🇷🇪<br>
+            <span style='color: #d8a824;'>Visualisez</span> 👀,<br>
+            <span style='color: #d8a824;'>Analysez</span> 📈,<br>
             <span style='color: #d8a824;'>Décidez</span> ✔️
         </h1>
     </div>
 """, unsafe_allow_html=True)
+st.markdown('---')
 st.image("./streamlit/app/img/LOGO.PNG", width=800)
 st.markdown('---')
 
