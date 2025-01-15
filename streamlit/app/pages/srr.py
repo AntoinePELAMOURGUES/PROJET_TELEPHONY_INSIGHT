@@ -9,15 +9,24 @@ if 'page' not in st.session_state:
 
 # Page Title
 if st.session_state.page == "srr":
-    st.title("SRR")
+    st.markdown("""
+    <div style='text-align: center; color: #d8a824; font-family: "Playwrite IN", monospace; font-size: 18px;'>
+        <h1>
+            SRR
+        </h1>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown('---')
 
     st.write("Veuillez choisir le type de réquisition que vous souhaitez analyser :")
 
-    if st.button("MT24"):
-        st.session_state.page = "mt24"  # Change page state
+    left, right = st.columns(2)
+    if left.button("MT20", use_container_width=True):
+        st.session_state.page = "mt24"
 
-    if st.button("MT20"):  # Example for another option
-        st.session_state.page = "mt20"  # Change to another page
+    if right.button("MT24", use_container_width=True):
+        st.session_state.page = "mt20"
 
 # Logic for MT24 Page
 if st.session_state.page == "mt24" or st.session_state.page == "mt20":
@@ -55,7 +64,7 @@ if st.session_state.page == "mt24" or st.session_state.page == "mt20":
                 st.write("Voici un aperçu des données complètes sur la période choisie:")
             st.write(df[['Date','Abonné', 'Correspondant', "Type d'appel", 'Durée', 'Adresse', 'IMEI', 'IMSI']])
             st.markdown("---")
-            st.write("Nombre de communications par correspondant:")
+            st.write("Nombre de communications par correspondant (exclusion des n° spéciaux):")
             corr = count_corr(df)
             st.write(corr)
             st.markdown("---")
@@ -82,7 +91,7 @@ if st.session_state.page == "mt24" or st.session_state.page == "mt20":
             comm_histo_h = comm_histo_hour(df)
             st.plotly_chart(comm_histo_h)
             st.markdown("---")
-            st.write("Nombre de communications par adresse :")
+            st.write("Nombre de communications par adresse du relais :")
             adresse_co = adresse_count(df)
             st.write(adresse_co)
             st.markdown("---")
