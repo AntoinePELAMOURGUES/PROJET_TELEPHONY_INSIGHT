@@ -29,8 +29,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Title and logo
-st.markdown("<h2 style='text-align: center;'>:orange[Données Téléphoniques de La Réunion :flag-re: : Visualisez :eyes:, Analysez :chart_with_upwards_trend:, Décidez 	:heavy_check_mark:]</h2>", unsafe_allow_html=True)
-st.markdown('---')
+st.header(":orange[Données Téléphoniques de La Réunion] :flag-re: : :orange[Visualisez] :eyes:, :orange[Analysez] :chart_with_upwards_trend:, :orange[Décidez] :heavy_check_mark:]", divider=True)
 st.image("./streamlit/app/img/LOGO.PNG", width=800)
 st.markdown('---')
 
