@@ -111,7 +111,7 @@ if st.session_state.page == "mt24" or st.session_state.page == "mt20":
             st.markdown("---")
             st.write("🌍 Cartographie des relais déclenchés :")
             fig = px.scatter_map(address_count, lat="Latitude", lon="Longitude", color="Percentage", size="Count", hover_name="Adresse",
-                        color_continuous_scale=px.colors.sequential.Bluered, size_max=15, zoom=10,
+                        color_continuous_scale=px.colors.sequential.Bluered, size_max=40, zoom=10,
                         map_style="carto-positron")
             st.plotly_chart(fig)
             if st.button("Retour au menu principal"):
