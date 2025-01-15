@@ -91,7 +91,7 @@ def preprocess_data(file1):
     df['VILLE']= df['VILLE'].str.replace("SAINT", "ST")
     df['VILLE']= df['VILLE'].str.replace("SAINTE", "STE")
     df['VILLE']= df['VILLE'].str.replace("L'", "")
-    df['Ville'] = df['Ville'].str.replace("É", "E", regex=False)
+    df['VILLE'] = df['VILLE'].str.replace("É", "E", regex=False)
     df["Adresse"] = df["ADRESSE2"] + ", " + df["CODE POSTAL"] + " " + df["VILLE"]
     df['Adresse'] = df['Adresse'].str.upper()
     df = df.rename(columns={"TYPE": "Type d'appel", "CORRESPONDANT": "Correspondant", "CIBLE": "Abonné", "DIRECTION": "Direction", "DUREE": "Durée", "VILLE": "Ville", "X": "Latitude", "Y": "Longitude", "converted_date": "Date"})
