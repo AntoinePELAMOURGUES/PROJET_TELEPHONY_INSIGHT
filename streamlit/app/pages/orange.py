@@ -105,6 +105,7 @@ if st.session_state.page == "mt24" or st.session_state.page == "mt20":
                 st.write("🔴 Adresses non trouvées :")
                 for address in non_found_addresses:
                     st.markdown(f"• {address}")
+            non_found_addresses = []  # Réinitialiser la liste
             st.plotly_chart(carto)
             if st.button("Retour au menu principal"):
                 # Option 1 : Vider le session_state
