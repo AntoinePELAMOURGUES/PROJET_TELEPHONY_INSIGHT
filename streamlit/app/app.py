@@ -4,7 +4,7 @@ import streamlit as st
 # Setup web page
 st.set_page_config(
     page_title="Telephony DataViz App",
-    page_icon="./streamlit/app/img/Icone.PNG",  # Path as string
+    page_icon="./streamlit/app/img/icone.png",  # Path as string
 )
 # Importer la police et définir le style CSS
 st.markdown("""
@@ -40,7 +40,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 st.markdown('---')
-st.image("./streamlit/app/img/LOGO.PNG", width=800)
+st.image("./streamlit/app/img/logo.png", width=800)
 st.markdown('---')
 
 # Bouton centré

@@ -1,9 +1,5 @@
 import pandas as pd
 import numpy as np
-import plotly.graph_objects as go
-import plotly.express as px
-from geopy.geocoders import Photon
-from geopy.extra.rate_limiter import RateLimiter
 import re
 
 def extract_city(address):
