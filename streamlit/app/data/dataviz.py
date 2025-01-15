@@ -201,8 +201,8 @@ def carto_orre(df):
 
 
 def geocode_address_datagouv(address):
-    non_found_addresses = []
     try:
+        non_found_addresses = []
         # URL du service de géocodage
         url = "https://data.geopf.fr/geocodage/search"
 
@@ -225,7 +225,7 @@ def geocode_address_datagouv(address):
                 return (coords[1], coords[0])  # Retourner (latitude, longitude)
             else:
                 non_found_addresses.append(address)
-                return (None, None)  # Pas de résultats trouvés
+                return non_found_addresses  # Pas de résultats trouvés
         else:
             print(f"Erreur lors de la requête : {response.status_code}")
             return (None, None)
