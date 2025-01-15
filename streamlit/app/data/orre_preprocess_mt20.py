@@ -20,6 +20,7 @@ def preprocess_data(file1):
     # Remplacer '0693' par '262693' dans les colonnes 'Abonné' et 'Correspondant'
     df['Date'] = pd.to_datetime(df['Date'])
     df['Abonné'] = df['Abonné'].replace(r'^0693', '262693', regex=True)
+    df['Correspondant'] = df['Correspondant'].str.split(',').str[0]
     df['Correspondant'] = df['Correspondant'].replace(r'^0693', '262693', regex=True)
     df['Abonné'] = df['Abonné'].replace(r'^0692', '262692', regex=True)
     df['Correspondant'] = df['Correspondant'].replace(r'^0692', '262692', regex=True)

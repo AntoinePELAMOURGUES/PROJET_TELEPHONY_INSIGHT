@@ -7,6 +7,7 @@ def preprocess_data(file1, file2):
     df2 = pd.read_excel(file2, usecols=["CIREF", "Adresse", "Comp. adresse", "Code postal", "Bureau Distributeur", "Coordonnée X", "Coordonnée Y"], dtype={"CIREF":str, "Adresse":str,"Code postal" :str, "Comp. adresse": str,  "Bureau Distributeur":str, "Coordonnée X": str, "Coordonnée Y": str})
     # Remplacer '0693' par '262693' dans les colonnes 'Abonné' et 'Correspondant'
     df1['Abonné'] = df1['Abonné'].replace(r'^0693', '262693', regex=True)
+    df1['Correspondant'] = df1['Correspondant'].str.split(',').str[0]
     df1['Correspondant'] = df1['Correspondant'].replace(r'^0693', '262693', regex=True)
     df1['Abonné'] = df1['Abonné'].replace(r'^0692', '262692', regex=True)
     df1['Correspondant'] = df1['Correspondant'].replace(r'^0692', '262692', regex=True)

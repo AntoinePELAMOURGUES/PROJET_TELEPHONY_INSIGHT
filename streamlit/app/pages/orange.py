@@ -55,7 +55,7 @@ if st.session_state.page == "mt24" or st.session_state.page == "mt20":
             st.markdown("---")
             # Vérifier si un filtre a été sélectionné
             if filter != "Sélectionner":
-                value_filter = st.selectbox(f"{filter} :", list(df[filter].unique()))
+                value_filter = st.selectbox(f"{filter} :", ['Sélectionner'] + list(df[filter].dropna().unique()))
                 if value_filter:
                     # Appliquer le filtre en fonction de la sélection
                     df = df[df[filter].astype(str) == value_filter]

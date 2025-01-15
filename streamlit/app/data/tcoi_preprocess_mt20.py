@@ -71,6 +71,7 @@ def preprocess_data(file1):
     df['converted_date'] = df['DATE'].apply(convert_date)
     # Formater la date au format DD-MM-YYYY HH:MM:SS
     df["CORRESPONDANT"] = df["CORRESPONDANT"].fillna("Data")
+    df['CORRESPONDANT'] = df['CORRESPONDANT'].str.split(',').str[0]
     df["DUREE"] = df["DUREE"].fillna("0")
     df['IMEI'] = df['IMEI'].fillna("Non précisé")
     df['CORRESPONDANT'] = df['CORRESPONDANT'].apply(clean_number)
