@@ -198,11 +198,9 @@ non_found_addresses = []
 def get_coordinates(address):
     try:
         location = geocode_with_delay(address)
-        return (location.latitude, location.longitude) if location else (None, None)
+        return (location.latitude, location.longitude) if location else non_found_addresses.append(address)
     except Exception as e:
         print(f"Erreur lors de la géocodage de l'adresse {address}: {e}")
-        # Ajouter l'adresse à la liste des non trouvées
-        non_found_addresses.append(address)
         return (None, None)
 
 
