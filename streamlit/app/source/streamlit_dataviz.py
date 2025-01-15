@@ -364,6 +364,7 @@ def visualisation_data(df, operateur: str):
             st.write("🔴 Adresses non trouvées :")
             for address in non_found_addresses:
                 st.markdown(f"• {address}")
+        non_found_addresses = []
 
 
    # Bouton pour retourner au menu principal
