@@ -80,5 +80,6 @@ def preprocess_data(file1):
     df['Ville']= df['Ville'].str.replace("SAINT", "ST")
     df['Ville']= df['Ville'].str.replace("SAINTE", "STE")
     df['Ville']= df['Ville'].str.replace("L'", "")
+    df['Ville'] = df['Ville'].str.replace("É", "E", regex=False)
     return df
 
