@@ -364,11 +364,11 @@ def visualisation_data(df, operateur: str):
             st.write("🔴 Adresses non trouvées :")
             for address in non_found_addresses:
                 st.markdown(f"• {address}")
-            non_found_addresses = []
 
 
    # Bouton pour retourner au menu principal
     if st.button("Retour au menu principal"):
+        non_found_addresses.clear()  # Effacer la liste des adresses non trouvées
         for key in list(st.session_state.keys()):
             del st.session_state[key]  # Supprime toutes les clés dans session_state
         # Naviguer vers la page du menu principal
