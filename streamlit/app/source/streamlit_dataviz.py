@@ -147,7 +147,7 @@ def comm_histo_hour(df):
     try:
         df['Date'] = pd.to_datetime(df['Date'])  # Convertir en datetime
         df['Hour'] = df['Date'].dt.hour  # Extraire l'heure
-        fig = px.histogram(df, x='Hour', title='Nombre de communications par heure',
+        fig = px.histogram(df, x='Hour', title='Nombre de communications par heure de la journée',
                            labels={'Hour': 'Heure', 'count': 'Nombre de communications'},
                            histnorm='')
         # Ajouter des bordures aux barres
@@ -224,6 +224,13 @@ def carto_adresse_srr(df):
                             hover_name="Nombre de déclenchement",
                             size_max=60, zoom=10,
                             map_style="carto-positron")
+        fig.update_layout(legend=dict(
+            orientation="h",  # Orientation horizontale
+            yanchor="top",    # Ancrage vertical en haut
+            y=-0.2,           # Position verticale sous la carte
+            xanchor="center",  # Ancrage horizontal au centre
+            x=0.5             # Position horizontale au centre
+        ))
         return fig
     except Exception as e:
         print(f"Erreur lors de la création de la carte des adresses: {e}")
@@ -238,6 +245,13 @@ def carto_adresse_orre(df):
                             hover_name="Nombre de déclenchement",
                             size_max=60, zoom=10,
                             map_style="carto-positron")
+        fig.update_layout(legend=dict(
+            orientation="h",  # Orientation horizontale
+            yanchor="top",    # Ancrage vertical en haut
+            y=-0.2,           # Position verticale sous la carte
+            xanchor="center",  # Ancrage horizontal au centre
+            x=0.5             # Position horizontale au centre
+        ))
         return fig
     except Exception as e:
         print(f"Erreur lors de la création de la carte ORRE: {e}")
@@ -252,6 +266,15 @@ def carto_adresse_tcoi(df):
                             hover_name="Nombre de déclenchement",
                             size_max=60, zoom=10,
                             map_style="carto-positron")
+
+        fig.update_layout(legend=dict(
+            orientation="h",  # Orientation horizontale
+            yanchor="top",    # Ancrage vertical en haut
+            y=-0.2,           # Position verticale sous la carte
+            xanchor="center",  # Ancrage horizontal au centre
+            x=0.5             # Position horizontale au centre
+        ))
+
         return fig
     except Exception as e:
         print(f"Erreur lors de la création de la carte des adresses: {e}")

@@ -5,7 +5,7 @@ import numpy as np
 def preprocess_data(file1, file2):
     expected_columns_file1 = ["Type d'appel", "Abonné", "Correspondant", "Date", "Durée", "CIREF", "IMEI", "IMSI"]
     expected_columns_file2 = ["CIREF", "Adresse", "Comp. adresse", "Code postal", "Bureau Distributeur", "Coordonnée X", "Coordonnée Y"]
-    df1 = pd.read_excel(file1, dtype={"Abonné": str, "Correspondant": str, "IMEI": str, "IMSI": str, "CIREF": str})
+    df1 = pd.read_excel(file1, dtype={"Abonné": str, "Correspondant": str, "IMEI": str, "IMSI": str, "CIREF": str, "Durée": str})
     df2 = pd.read_excel(file2, dtype= {"CIREF": str, "Adresse" : str, "Comp. adresse" : str, "Code postal" : str, "Bureau Distributeur" : str, "Coordonnée X": str, "Coordonnée Y": str})
     available_columns_1 = df1.columns.tolist()
     # Filtrer les colonnes attendues qui sont disponibles
