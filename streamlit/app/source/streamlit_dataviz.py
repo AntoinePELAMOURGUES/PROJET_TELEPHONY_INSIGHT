@@ -209,8 +209,8 @@ def carto_adresse_srr(df):
         df_merged[['Latitude', 'Longitude']] = df_merged.apply(lambda row: gauss_laborde_to_wgs84(row['Coordonnée X'], row['Coordonnée Y']), axis=1, result_type='expand')
         fig = px.scatter_map(df_merged,
                             lat="Latitude", lon="Longitude",
-                            color="Pourcentage", size="Nombre de déclenchement",
-                            hover_name="Adresse", color_continuous_scale=px.colors.sequential.Bluered,
+                            color="Adresse", size="Nombre de déclenchement",
+                            hover_name="Nombre de déclenchement",
                             size_max=60, zoom=10,
                             map_style="carto-positron")
         return fig
@@ -223,8 +223,8 @@ def carto_adresse_orre(df):
     try:
         fig = px.scatter_map(df,
                             lat="Latitude", lon="Longitude",
-                            color="Pourcentage", size="Nombre de déclenchement",
-                            hover_name="Adresse", color_continuous_scale=px.colors.sequential.Bluered,
+                            color="Adresse", size="Nombre de déclenchement",
+                            hover_name="Nombre de déclenchement",
                             size_max=60, zoom=10,
                             map_style="carto-positron")
         return fig
@@ -237,8 +237,8 @@ def carto_adresse_tcoi(df):
     try:
         fig = px.scatter_map(df,
                             lat="Latitude", lon="Longitude",
-                            color="Pourcentage", size="Nombre de déclenchement",
-                            hover_name="Adresse", color_continuous_scale=px.colors.sequential.Bluered,
+                            color="Adresse", size="Nombre de déclenchement",
+                            hover_name="Nombre de déclenchement",
                             size_max=60, zoom=10,
                             map_style="carto-positron")
         return fig
@@ -246,133 +246,193 @@ def carto_adresse_tcoi(df):
         print(f"Erreur lors de la création de la carte des adresses: {e}")
         return go.Figure()
 
+
 def visualisation_data(df, operateur: str):
-    # Afficher la période complète de la FADET
-    st.write("ℹ️ La période complète de la FADET s'étend du {} au {}".format(df["Date"].min(), df["Date"].max()))
-    st.markdown("---")
+    if 'Date' in df.columns:
+        # Afficher la période complète de la FADET
+        st.write("ℹ️ La période complète de la FADET s'étend du {} au {}".format(df["Date"].min(), df["Date"].max()))
+        st.markdown("---")
 
-    # Interface pour sélectionner la période d'analyse
-    st.write("📅 Vous pouvez modifier la période d'analyse ci-dessous :")
-    start_date = st.date_input("Date de début", min_value=df["Date"].min(), max_value=df["Date"].max(), value=df["Date"].min())
-    end_date = st.date_input("Date de fin", min_value=df["Date"].min(), max_value=df["Date"].max(), value=df["Date"].max())
+        # Interface pour sélectionner la période d'analyse
+        st.write("📅 Vous pouvez modifier la période d'analyse ci-dessous :")
+        start_date = st.date_input("Date de début", min_value=df["Date"].min(), max_value=df["Date"].max(), value=df["Date"].min())
+        end_date = st.date_input("Date de fin", min_value=df["Date"].min(), max_value=df["Date"].max(), value=df["Date"].max())
 
-    # Conversion des dates en datetime
-    start_date = pd.to_datetime(start_date)
-    end_date = pd.to_datetime(end_date)
+        # Conversion des dates en datetime
+        start_date = pd.to_datetime(start_date)
+        end_date = pd.to_datetime(end_date)
 
-    # Filtrer le DataFrame en fonction des dates sélectionnées
-    df = df[(df["Date"] >= start_date) & (df["Date"] <= end_date)]
-    st.markdown("---")
+        # Filtrer le DataFrame en fonction des dates sélectionnées
+        df = df[(df["Date"] >= start_date) & (df["Date"] <= end_date)]
+        st.markdown("---")
+    else:
+        st.write("❌ Aucune date n'a été trouvée dans le fichier chargé.")
+        return
+
+    expected_columns = ['Date', 'Abonné', 'Correspondant', "Type d'appel", 'Durée', 'Adresse', 'IMEI', 'IMSI']
+    expected_columns_filter = ["Type d'appel", "Correspondant", "IMEI", "IMSI", "Ville", "Adresse"]
 
     # Interface pour appliquer un filtre supplémentaire
     st.write("Choisissez un filtre si besoin :")
-    filter = st.selectbox("Filtrer par :", ["Sélectionner", "Correspondant", "IMEI", "IMSI", "Ville"])
+    filter_option = st.selectbox("Filtrer par :", ["Sélectionner"] + expected_columns_filter)
     st.markdown("---")
 
     # Vérifier si un filtre a été sélectionné
-    if filter != "Sélectionner":
-        value_filter = st.selectbox(f"{filter} :", ['Sélectionner'] + list(df[filter].dropna().unique()))
+    if filter_option != "Sélectionner" and filter_option in df.columns:
+        value_filter = st.selectbox(f"Valeur pour {filter_option} :", ['Sélectionner'] + list(df[filter_option].dropna().unique()))
+
         if value_filter != 'Sélectionner':
             st.markdown("---")
             # Appliquer le filtre en fonction de la sélection
-            df = df[df[filter].astype(str) == value_filter]
-            st.write(f"Voici un aperçu des données ayant pour filtre {filter} : {value_filter}")
-
+            df = df[df[filter_option].astype(str) == value_filter]
+            st.write(f"Voici un aperçu des données ayant pour filtre {filter_option} : {value_filter}")
     else:
         st.write("Voici un aperçu des données complètes sur la période choisie:")
 
     # Affichage des données filtrées
-    st.write(df[['Date', 'Abonné', 'Correspondant', "Type d'appel", 'Durée', 'Adresse', 'IMEI', 'IMSI']])
+    filtered_df = df[expected_columns].dropna(how='all')  # Affiche uniquement les colonnes attendues et ignore les lignes vides
+    st.write(filtered_df)
+
+    # Bouton pour télécharger les données filtrées au format CSV
+    csv = filtered_df.to_csv(index=False)
+    st.download_button(
+        label="Télécharger les données filtrées en CSV",
+        data=csv,
+        file_name='données_complètes.csv',
+        mime='text/csv'
+    )
+
     st.markdown("---")
 
     # Afficher le nombre de communications par correspondant (exclusion des n° spéciaux)
-    st.write("Nombre de communications par correspondant (exclusion des n° spéciaux):")
-    corr = count_corr(df)
-    st.write(corr)
+    if 'Correspondant' in df.columns:
+        st.write("Nombre de communications par correspondant (exclusion des n° spéciaux):")
+        corr = count_corr(df)
+        st.write(corr)
+
+        # Bouton pour télécharger les résultats de corr en CSV
+        corr_csv = corr.to_csv(index=False)
+        st.download_button(
+            label="Télécharger les communications par correspondant",
+            data=corr_csv,
+            file_name='communications_par_correspondant.csv',
+            mime='text/csv'
+        )
+    else:
+        st.write("❌ La colonne 'Correspondant' n'est pas disponible.")
+
     st.markdown("---")
 
     # Afficher le type de communications
-    st.write("Type de communications :")
-    type_fig = count_phone_type(df)
-    st.plotly_chart(type_fig)
-    st.markdown("---")
+    if "Type d'appel" in df.columns:
+        st.write("Type de communications :")
+        type_fig = count_phone_type(df)
+        st.plotly_chart(type_fig)
+
+        # Optionnel : Ajouter un bouton pour télécharger une image du graphique, si nécessaire.
+    else:
+        st.write("❌ La colonne 'Type d'appel' n'est pas disponible.")
 
     # Afficher le nombre de communications par IMEI et IMSI
-    st.write("Nombre de communications par IMEI :")
-    imei = count_IMEI(df)
-    st.write(imei)
+    if 'IMEI' in df.columns:
+        st.write("Nombre de communications par IMEI :")
+        imei = count_IMEI(df)
+        st.write(imei)
 
-    st.markdown("---")
+        imei_csv = imei.to_csv(index=False)
+        st.download_button(
+            label="Télécharger les communications par IMEI",
+            data=imei_csv,
+            file_name='communications_par_imei.csv',
+            mime='text/csv'
+        )
+    else:
+        st.write("❌ La colonne 'IMEI' n'est pas disponible.")
 
-    st.write("Nombre de communications par IMSI :")
-    imsi = count_IMSI(df)
-    st.write(imsi)
+    if 'IMSI' in df.columns:
+        st.markdown("---")
+        st.write("Nombre de communications par IMSI :")
+        imsi = count_IMSI(df)
+        st.write(imsi)
+
+        imsi_csv = imsi.to_csv(index=False)
+        st.download_button(
+            label="Télécharger les communications par IMSI",
+            data=imsi_csv,
+            file_name='communications_par_imsi.csv',
+            mime='text/csv'
+        )
+    else:
+        st.write("❌ La colonne 'IMSI' n'est pas disponible.")
 
     # Histogrammes des communications
-    st.markdown("---")
+    if not df.empty:  # Vérifier que le DataFrame n'est pas vide avant d'afficher les histogrammes
+        comm_histo_glo = comm_histo_global(df)
+        st.plotly_chart(comm_histo_glo)
 
-    comm_histo_glo = comm_histo_global(df)
-    st.plotly_chart(comm_histo_glo)
+        comm_histo_month = comm_histo_monthly(df)
+        st.plotly_chart(comm_histo_month)
 
-    comm_histo_month = comm_histo_monthly(df)
-    st.plotly_chart(comm_histo_month)
+        comm_histo_week = comm_histo_weekday(df)
+        st.plotly_chart(comm_histo_week)
 
-    comm_histo_week = comm_histo_weekday(df)
-    st.plotly_chart(comm_histo_week)
-
-    comm_histo_h = comm_histo_hour(df)
-    st.plotly_chart(comm_histo_h)
+        comm_histo_h = comm_histo_hour(df)
+        st.plotly_chart(comm_histo_h)
 
     # Nombre de communications par adresse du relais
-    st.markdown("---")
+    if 'Adresse' in df.columns:
+        st.markdown("---")
+        st.write("Nombre de communications par adresse du relais :")
 
-    st.write("Nombre de communications par adresse du relais :")
-    adresse_co = adresse_count(df)
-    st.write(adresse_co)
+        adresse_co = adresse_count(df)
+        adresse_co_csv = adresse_co.to_csv(index=False)
+        st.download_button(
+            label="Télécharger le nombre de communications par adresse",
+            data=adresse_co_csv,
+            file_name='communications_par_adresse.csv',
+            mime='text/csv'
+        )
+        st.write(adresse_co)
+
+    else:
+        st.write("❌ La colonne 'Adresse' n'est pas disponible.")
 
     # Graphique scatter par ville
-    st.markdown("---")
-
-    scatter = scatter_plot_ville(df)
-    st.plotly_chart(scatter)
+    if 'Ville' in df.columns:
+        scatter = scatter_plot_ville(df)
+        st.plotly_chart(scatter)
 
     # Cartographie des relais déclenchés selon l'opérateur
-    st.markdown("---")
-
-    st.write("🌍 Cartographie des relais déclenchés :")
-
     if operateur == 'SRR':
         carto = carto_adresse_srr(df)
-        st.plotly_chart(carto)
+        if carto is not None:
+            st.plotly_chart(carto)
 
     elif operateur == "TCOI":
-        # Supprimer les doublons dans df en fonction de l'adresse
-        df_unique = df[['Adresse', 'Latitude', 'Longitude']].drop_duplicates()
-        # Faire la jointure pour obtenir les coordonnées
-        df_merged = adresse_co.merge(df_unique, on='Adresse', how='left')
-        df_merged['Latitude'] = df_merged['Latitude'].astype(float)
-        df_merged['Longitude'] = df_merged['Longitude'].astype(float)
-        carto = carto_adresse_tcoi(df_merged)
-        st.plotly_chart(carto)
+        if 'Adresse' in df.columns and 'Latitude' in df.columns and 'Longitude' in df.columns:
+            df_unique = df[['Adresse', 'Latitude', 'Longitude']].drop_duplicates()
+            df_merged = adresse_co.merge(df_unique, on='Adresse', how='left')
+            carto = carto_adresse_tcoi(df_merged)
+            if carto is not None:
+                st.plotly_chart(carto)
 
     elif operateur == 'ORRE':
-        adresse_co['Coordinates'] = adresse_co['Adresse'].apply(geocode_address_datagouv)
-        # Séparer les coordonnées en deux colonnes Latitude et Longitude
-        adresse_co[['Latitude', 'Longitude']] = pd.DataFrame(adresse_co['Coordinates'].tolist(), index=adresse_co.index)
-        carto = carto_adresse_orre(adresse_co)
-        st.plotly_chart(carto)
-        st.markdown("---")
-        if non_found_addresses:
-            st.write("🔴 Adresses non trouvées :")
-            for address in non_found_addresses:
-                st.markdown(f"• {address}")
+        if 'Adresse' in df.columns:
+            adresse_co['Coordinates'] = adresse_co['Adresse'].apply(geocode_address_datagouv)
+            adresse_co[['Latitude', 'Longitude']] = pd.DataFrame(adresse_co['Coordinates'].tolist(), index=adresse_co.index)
+            carto = carto_adresse_orre(adresse_co)
+            if carto is not None:
+                st.plotly_chart(carto)
 
+            if non_found_addresses:
+                st.write("🔴 Adresses non trouvées :")
+                for address in non_found_addresses:
+                    st.markdown(f"• {address}")
 
-   # Bouton pour retourner au menu principal
+    # Bouton pour retourner au menu principal
     if st.button("Retour au menu principal"):
         non_found_addresses.clear()  # Effacer la liste des adresses non trouvées
         for key in list(st.session_state.keys()):
             del st.session_state[key]  # Supprime toutes les clés dans session_state
         # Naviguer vers la page du menu principal
         st.switch_page("pages/menu.py")  # Retour au menu principal
-

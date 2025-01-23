@@ -66,67 +66,78 @@ def replace_unknown_ville(row):
     return row['VILLE']
 
 def preprocess_data(file1):
-    df = pd.read_csv(file1, sep=';', encoding='latin1', usecols=["TYPE", "DATE", "CIBLE", "CORRESPONDANT", "DIRECTION", "DUREE", "IMSI", "IMEI", "ADRESSE2", "CODE POSTAL", "VILLE", "X", "Y"], dtype= {"TYPE": str, "CIBLE": str, "CORRESPONDANT": str, "DIRECTION": str, "DUREE": str, "IMSI": str, "IMEI": str, "ADRESSE2": str, "CODE POSTAL": str, "VILLE": str, "X": str, "Y": str})
+    expected_columns = ["TYPE", "DATE", "CIBLE", "CORRESPONDANT", "DIRECTION", "DUREE", "IMSI", "IMEI", "ADRESSE2", "CODE POSTAL", "VILLE", "X", "Y"]
+    df = pd.read_csv(file1, sep=';', encoding='latin1', usecols= lambda col : col in expected_columns)
     # Appliquer la fonction pour convertir les dates
-    df['converted_date'] = df['DATE'].apply(convert_date)
-    # Formater la date au format DD-MM-YYYY HH:MM:SS
-    df["CORRESPONDANT"] = df["CORRESPONDANT"].fillna("Data")
-    df['CORRESPONDANT'] = df['CORRESPONDANT'].str.split(',').str[0]
-    df["DUREE"] = df["DUREE"].fillna("0")
-    df['IMEI'] = df['IMEI'].fillna("Non précisé")
-    df['CORRESPONDANT'] = df['CORRESPONDANT'].apply(clean_number)
-    df['CIBLE'] = df['CIBLE'].apply(clean_number)
-    df["IMEI"] = df["IMEI"].apply(clean_number)
-    df['IMSI'] = df['IMSI'].apply(clean_number)
-    df['CIBLE'] = df['CIBLE'].replace(r'^0692', '262692', regex=True)
-    df['CIBLE'] = df['CIBLE'].replace(r'^0693', '262693', regex=True)
-    df['CORRESPONDANT'] = df['CORRESPONDANT'].replace(r'^0692', '262692', regex=True)
-    df['CORRESPONDANT'] = df['CORRESPONDANT'].replace(r'^0693', '262693', regex=True)
-    df['CIBLE'] = df['CIBLE'].replace(r'^06', '336', regex=True)
-    df['CORRESPONDANT'] = df['CORRESPONDANT'].replace(r'^06', '336', regex=True)
-    df['CORRESPONDANT'] = df['CORRESPONDANT'].replace(r'^07', '337', regex=True)
-    df['CORRESPONDANT'] = df['CORRESPONDANT'].replace(r'^02', '2622', regex=True)
-    df['VILLE'] = df.apply(replace_unknown_ville, axis=1)
-    df['VILLE'] = df['VILLE'].str.upper()
-    df['VILLE']= df['VILLE'].str.replace("-", " ")
-    df['VILLE']= df['VILLE'].str.replace("SAINT", "ST")
-    df['VILLE']= df['VILLE'].str.replace("SAINTE", "STE")
-    df['VILLE']= df['VILLE'].str.replace("L'", "")
-    df['VILLE'] = df['VILLE'].str.replace("É", "E", regex=False)
-    df["Adresse"] = df["ADRESSE2"] + ", " + df["CODE POSTAL"] + " " + df["VILLE"]
-    df['Adresse'] = df['Adresse'].str.upper()
-    df = df.rename(columns={"TYPE": "Type d'appel", "CORRESPONDANT": "Correspondant", "CIBLE": "Abonné", "DIRECTION": "Direction", "DUREE": "Durée", "VILLE": "Ville", "X": "Latitude", "Y": "Longitude", "converted_date": "Date"})
-    # Extraire l'année, le mois et le jour de la semaine
-    df['Années'] = df['Date'].dt.year
-    df['Mois'] = df['Date'].dt.month
-    df['Jour de la semaine'] = df['Date'].dt.day_name()
-    # Mapper les jours de la semaine en français
-    jours_semaine_fr = {
-        'Monday': 'Lundi',
-        'Tuesday': 'Mardi',
-        'Wednesday': 'Mercredi',
-        'Thursday': 'Jeudi',
-        'Friday': 'Vendredi',
-        'Saturday': 'Samedi',
-        'Sunday': 'Dimanche'
+    if 'DATE' in df.columns:
+        df['converted_date'] = df['DATE'].apply(convert_date)
+        # Extraire l'année, le mois et le jour de la semaine
+        df['Années'] = df['DATE'].dt.year
+        df['Mois'] = df['DATE'].dt.month
+        df['Jour de la semaine'] = df['DATE'].dt.day_name()
+        # Mapper les jours de la semaine en français
+        jours_semaine_fr = {
+            'Monday': 'Lundi',
+            'Tuesday': 'Mardi',
+            'Wednesday': 'Mercredi',
+            'Thursday': 'Jeudi',
+            'Friday': 'Vendredi',
+            'Saturday': 'Samedi',
+            'Sunday': 'Dimanche'
+        }
+        # Mapper les mois en français
+        mois_fr = {
+            1: 'Janvier',
+            2: 'Février',
+            3: 'Mars',
+            4: 'Avril',
+            5: 'Mai',
+            6: 'Juin',
+            7: 'Juillet',
+            8: 'Août',
+            9: 'Septembre',
+            10: 'Octobre',
+            11: 'Novembre',
+            12: 'Décembre'
+        }
+        # Remplacer les numéros de mois par leur équivalent en français
+        df['Mois'] = df['Mois'].map(mois_fr)
+        # Remplacer les noms des jours par leur équivalent en français
+        df['Jour de la semaine'] = df['Jour de la semaine'].map(jours_semaine_fr)
+    if 'CORRESPONDANT' in df.columns:
+        df["CORRESPONDANT"] = df["CORRESPONDANT"].fillna("Data")
+        df['CORRESPONDANT'] = df['CORRESPONDANT'].str.split(',').str[0]
+        df['CORRESPONDANT'] = df['CORRESPONDANT'].apply(clean_number)
+        df['CORRESPONDANT'] = df['CORRESPONDANT'].replace(r'^0692', '262692', regex=True)
+        df['CORRESPONDANT'] = df['CORRESPONDANT'].replace(r'^0693', '262693', regex=True)
+        df['CORRESPONDANT'] = df['CORRESPONDANT'].replace(r'^06', '336', regex=True)
+        df['CORRESPONDANT'] = df['CORRESPONDANT'].replace(r'^07', '337', regex=True)
+        df['CORRESPONDANT'] = df['CORRESPONDANT'].replace(r'^02', '2622', regex=True)
+    if 'DUREE' in df.columns:
+        df["DUREE"] = df["DUREE"].fillna("0")
+    if 'IMEI' in df.columns:
+        df['IMEI'] = df['IMEI'].fillna("Non précisé")
+        df["IMEI"] = df["IMEI"].apply(clean_number)
+    if "IMSI" in df.columns:
+        df['IMSI'] = df['IMSI'].apply(clean_number)
+    if "CIBLE" in df.columns:
+        df['CIBLE'] = df['CIBLE'].apply(clean_number)
+        df['CIBLE'] = df['CIBLE'].replace(r'^0692', '262692', regex=True)
+        df['CIBLE'] = df['CIBLE'].replace(r'^0693', '262693', regex=True)
+        df['CIBLE'] = df['CIBLE'].replace(r'^06', '336', regex=True)
+    if "VILLE" in df.colmuns:
+        df['VILLE'] = df.apply(replace_unknown_ville, axis=1)
+        df['VILLE'] = df['VILLE'].str.upper()
+        df['VILLE']= df['VILLE'].str.replace("-", " ")
+        df['VILLE']= df['VILLE'].str.replace("SAINT", "ST")
+        df['VILLE']= df['VILLE'].str.replace("SAINTE", "STE")
+        df['VILLE']= df['VILLE'].str.replace("L'", "")
+        df['VILLE'] = df['VILLE'].str.replace("É", "E", regex=False)
+    if "VILLE" in df.colmuns and "CODE POSTAL" in df.columns and "VILLE" in df.columns:
+        df["Adresse"] = df["ADRESSE2"] + ", " + df["CODE POSTAL"] + " " + df["VILLE"]
+        df['Adresse'] = df['Adresse'].str.upper()
+    rename_dict = {"TYPE": "Type d'appel", "CORRESPONDANT": "Correspondant", "CIBLE": "Abonné", "DIRECTION": "Direction", "DUREE": "Durée", "VILLE": "Ville", "X": "Latitude", "Y": "Longitude", "converted_date": "Date"
     }
-    # Mapper les mois en français
-    mois_fr = {
-        1: 'Janvier',
-        2: 'Février',
-        3: 'Mars',
-        4: 'Avril',
-        5: 'Mai',
-        6: 'Juin',
-        7: 'Juillet',
-        8: 'Août',
-        9: 'Septembre',
-        10: 'Octobre',
-        11: 'Novembre',
-        12: 'Décembre'
-    }
-    # Remplacer les numéros de mois par leur équivalent en français
-    df['Mois'] = df['Mois'].map(mois_fr)
-    # Remplacer les noms des jours par leur équivalent en français
-    df['Jour de la semaine'] = df['Jour de la semaine'].map(jours_semaine_fr)
+    # Renommer uniquement les colonnes présentes dans le DataFrame
+    df.rename(columns={k: v for k, v in rename_dict.items() if k in df.columns}, inplace=True)
     return df
