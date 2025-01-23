@@ -11,6 +11,11 @@ def extract_city(address):
     return None  # Retourne None si aucune correspondance n'est trouvée ou si l'adresse n'est pas une chaîne
 
 def preprocess_data(file1):
+    # Lire le fichier sans usecols pour vérifier les colonnes
+    df = pd.read_csv(file1, header=1, sep=';', encoding='latin1')
+    # Vérifier les colonnes disponibles
+    available_columns = df.columns.tolist()
+
     # Liste des colonnes attendues
     expected_columns = [
         "Date de début d'appel",
@@ -22,8 +27,10 @@ def preprocess_data(file1):
         "IMEI abonné",
         "IMSI abonné"
     ]
-
-    df = pd.read_csv(file1, header=1, sep=';', encoding='latin1', usecols= lambda col: col in expected_columns)
+    # Filtrer uniquement les colonnes qui existent dans le DataFrame
+    usecols = [col for col in expected_columns if col in available_columns]
+    # Lire à nouveau avec usecols
+    df = pd.read_csv(file1, header=1, sep=';', encoding='latin1', usecols=usecols)
     rename_dict = {
         "Date de début d'appel": "Date",
         "MSISDN Abonné": "Abonné",
