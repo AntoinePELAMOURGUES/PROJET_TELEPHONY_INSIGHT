@@ -269,18 +269,19 @@ def visualisation_data(df, operateur: str):
         st.write("❌ Aucune date n'a été trouvée dans le fichier chargé.")
         return
 
-    expected_columns = ['Date', 'Abonné', 'Correspondant', "Type d'appel", 'Durée', 'Adresse', 'IMEI', 'IMSI']
-    expected_columns_filter = ["Type d'appel", "Correspondant", "IMEI", "IMSI", "Ville", "Adresse"]
-
+    if "Adresse" in df.columns and 'Ville' in df.colmuns:
+        expected_columns = ['Date', 'Abonné', 'Correspondant', "Type d'appel", 'Durée', 'Adresse', 'Ville', 'IMEI', 'IMSI']
+        expected_columns_filter = ["Type d'appel", "Correspondant", "IMEI", "IMSI", "Ville", "Adresse"]
+    else :
+        expected_columns = ['Date', 'Abonné', 'Correspondant', "Type d'appel", 'Durée', 'IMEI', 'IMSI']
+        expected_columns_filter = ["Type d'appel", "Correspondant", "IMEI", "IMSI"]
     # Interface pour appliquer un filtre supplémentaire
     st.write("Choisissez un filtre si besoin :")
     filter_option = st.selectbox("Filtrer par :", ["Sélectionner"] + expected_columns_filter)
     st.markdown("---")
-
     # Vérifier si un filtre a été sélectionné
-    if filter_option != "Sélectionner" and filter_option in df.columns:
+    if filter_option != "Sélectionner":
         value_filter = st.selectbox(f"Valeur pour {filter_option} :", ['Sélectionner'] + list(df[filter_option].dropna().unique()))
-
         if value_filter != 'Sélectionner':
             st.markdown("---")
             # Appliquer le filtre en fonction de la sélection
@@ -290,7 +291,7 @@ def visualisation_data(df, operateur: str):
         st.write("Voici un aperçu des données complètes sur la période choisie:")
 
     # Affichage des données filtrées
-    filtered_df = df[expected_columns].dropna(how='all')  # Affiche uniquement les colonnes attendues et ignore les lignes vides
+    filtered_df = df[expected_columns]
     st.write(filtered_df)
 
     # Bouton pour télécharger les données filtrées au format CSV
