@@ -13,11 +13,7 @@ def extract_city(address):
 
 @st.cache_data
 def preprocess_data(file1):
-    # Lire le fichier sans usecols pour vérifier les colonnes
-    df = pd.read_csv(file1, header=1, encoding='latin1')
-    # Vérifier les colonnes disponibles
-    available_columns = df.columns.tolist()
-    # Liste des colonnes attendues
+     # Liste des colonnes attendues
     expected_columns = [
         "Date de début d'appel",
         "MSISDN Abonné",
@@ -28,10 +24,8 @@ def preprocess_data(file1):
         "IMEI abonné",
         "IMSI abonné"
     ]
-    # Filtrer uniquement les colonnes qui existent dans le DataFrame
-    data_usecols = [col for col in expected_columns if col in available_columns]
     # Lire à nouveau avec usecols
-    df = pd.read_csv(file1, header=1, sep=';', encoding='latin1', usecols=data_usecols, dtype={"IMEI abonné": str})
+    df = pd.read_csv(file1, header=1, sep=';', encoding='latin1', usecols= [col for col in expected_columns if col in df.columns.tolist()], dtype={"IMEI abonné": str})
     rename_dict = {
         "Date de début d'appel": "Date",
         "MSISDN Abonné": "Abonné",
