@@ -285,7 +285,7 @@ def visualisation_data(df, operateur: str):
         st.write("❌ Aucune date n'a été trouvée dans le fichier chargé.")
         return
 
-    if "Adresse" in df.columns and 'Ville' in df.colmuns:
+    if "Adresse" in df.columns and 'Ville' in df.columns:
         expected_columns = ['Date', 'Abonné', 'Correspondant', "Type d'appel", 'Durée', 'Adresse', 'Ville', 'IMEI', 'IMSI']
         expected_columns_filter = ["Type d'appel", "Correspondant", "IMEI", "IMSI", "Ville", "Adresse"]
     else :
