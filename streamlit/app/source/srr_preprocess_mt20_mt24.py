@@ -5,8 +5,14 @@ import numpy as np
 def preprocess_data(file1, file2):
     expected_columns_file1 = ["Type d'appel", "Abonné", "Correspondant", "Date", "Durée", "CIREF", "IMEI", "IMSI"]
     expected_columns_file2 = ["CIREF", "Adresse", "Comp. adresse", "Code postal", "Bureau Distributeur", "Coordonnée X", "Coordonnée Y"]
-    df1 = pd.read_excel(file1, usecols= lambda col: col in expected_columns_file1)
-    df2 = pd.read_excel(file2, usecols= lambda col: col in expected_columns_file2)
+    df1 = pd.read_excel(file1, dtype={"Abonné": str, "Correspondant": str, "IMEI": str, "IMSI": str, "CIREF": str})
+    df2 = pd.read_excel(file2, dtype= {"CIREF": str, "Adresse" : str, "Comp. adresse" : str, "Code postal" : str, "Bureau Distributeur" : str, "Coordonnée X": str, "Coordonnée Y": str})
+    available_columns_1 = df1.columns.tolist()
+    # Filtrer les colonnes attendues qui sont disponibles
+    filtered_columns_1 = list(set(expected_columns_file1) & set(available_columns_1))
+    available_columns_2 = df2.columns.tolist()
+    # Filtrer les colonnes attendues qui sont disponibles
+    filtered_columns_2 = list(set(expected_columns_file2) & set(available_columns_2))
     if 'Date' in df1.columns:
         df1['Date'] = pd.to_datetime(df1['Date'])
         # Extraire l'année, le mois et le jour de la semaine
@@ -46,18 +52,14 @@ def preprocess_data(file1, file2):
         df1['Abonné'] = df1['Abonné'].replace(r'^0693', '262693', regex=True)
         df1['Abonné'] = df1['Abonné'].replace(r'^0692', '262692', regex=True)
         df1['Abonné'] = df1['Abonné'].replace(r'^06', '336', regex=True)
-        # Remplacer les NaN par 'Data'
-        df1['Abonné'] = df1['Abonné'].fillna('Data')
     if 'Correspondant' in df1.columns:
+        df1['Correspondant'] = df1['Correspondant'].fillna('Data')
         df1['Correspondant'] = df1['Correspondant'].str.split(',').str[0]
         df1['Correspondant'] = df1['Correspondant'].replace(r'^0693', '262693', regex=True)
         df1['Correspondant'] = df1['Correspondant'].replace(r'^0692', '262692', regex=True)
         df1['Correspondant'] = df1['Correspondant'].replace(r'^06', '336', regex=True)
         df1['Correspondant'] = df1['Correspondant'].replace(r'^07', '337', regex=True)
         df1['Correspondant'] = df1['Correspondant'].replace(r'^02', '2622', regex=True)
-        df1['Correspondant'] = df1['Correspondant'].fillna('Data')
-        # Remplacer les NaN par 'Data'
-        df1['Correspondant'] = df1['Correspondant'].fillna('Data')
     if 'Bureau Distributeur' in df2.columns:
         df2 = df2.rename(columns={'Bureau Distributeur': 'Ville'})
         df2['Ville']= df2['Ville'].str.upper()

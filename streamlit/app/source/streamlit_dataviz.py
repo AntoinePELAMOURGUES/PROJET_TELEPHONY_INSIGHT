@@ -120,14 +120,16 @@ def comm_histo_weekday(df):
     try:
         # Définir l'ordre des jours de la semaine
         jours_semaine = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
-        df['Jour de la semaine'] = pd.Categorical(df['Jour de la semaine'], categories=jours_semaine, ordered=True)
+
+        # Compter le nombre de communications par jour
+        counts = df['Jour de la semaine'].value_counts().reindex(jours_semaine, fill_value=0)
 
         # Créer l'histogramme
         fig_weekday = go.Figure()
-        fig_weekday.add_trace(go.Histogram(x=df['Jour de la semaine'],
-                                            histfunc='count',
-                                            name='Communications par jour de la semaine',
-                                            marker=dict(line=dict(color='black', width=1))))
+        fig_weekday.add_trace(go.Bar(x=counts.index,
+                                      y=counts.values,
+                                      name='Communications par jour de la semaine',
+                                      marker=dict(line=dict(color='black', width=1))))
 
         # Mettre à jour la mise en page
         fig_weekday.update_layout(title='Nombre de communications par jour de la semaine',
