@@ -11,7 +11,6 @@ def extract_city(address):
             return match.group(1).strip()  # Retourne la ville sans espaces superflus
     return None  # Retourne None si aucune correspondance n'est trouvée ou si l'adresse n'est pas une chaîne
 
-@st.cache_data
 def preprocess_data(file1):
      # Liste des colonnes attendues
     expected_columns = [
@@ -25,7 +24,7 @@ def preprocess_data(file1):
         "IMSI abonné"
     ]
     # Lire à nouveau avec usecols
-    df = pd.read_csv(file1, header=1, sep=';', encoding='latin1', usecols= [col for col in expected_columns if col in df.columns.tolist()], dtype={"IMEI abonné": str})
+    df = pd.read_csv(file1, header=1, sep=';', encoding='latin1')
     rename_dict = {
         "Date de début d'appel": "Date",
         "MSISDN Abonné": "Abonné",
@@ -73,6 +72,9 @@ def preprocess_data(file1):
         df['Mois'] = df['Mois'].map(mois_fr)
         # Remplacer les noms des jours par leur équivalent en français
         df['Jour de la semaine'] = df['Jour de la semaine'].map(jours_semaine_fr)
+    if 'IMEI' in df.columns:
+        df['IMEI'] = df['IMEI'].astype('str')
+        df['IMEI'] = df['IMEI'].str.replace('.0', '')
     if 'Abonné' in df.columns:
         df['Abonné'] = df['Abonné'].replace(r'^0693', '262693', regex=True)
         df['Abonné'] = df['Abonné'].replace(r'^0692', '262692', regex=True)
