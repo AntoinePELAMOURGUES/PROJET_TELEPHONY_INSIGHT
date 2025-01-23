@@ -223,7 +223,7 @@ def carto_adresse_srr(df):
                             color="Pourcentage", size="Nombre de déclenchement",
                             hover_name="Adresse",
                             size_max=60, zoom=10,
-                            color_continuous_scale=px.colors.sequential.dense,
+                            color_continuous_scale=px.colors.sequential.Bluered,
                             map_style="carto-positron")
 
         return fig
@@ -239,7 +239,7 @@ def carto_adresse_orre(df):
                             color="Pourcentage", size="Nombre de déclenchement",
                             hover_name="Adresse",
                             size_max=60, zoom=10,
-                            color_continuous_scale=px.colors.sequential.dense,
+                            color_continuous_scale=px.colors.sequential.Bluered,
                             map_style="carto-positron")
         return fig
     except Exception as e:
@@ -254,7 +254,7 @@ def carto_adresse_tcoi(df):
                             color="Pourcentage", size="Nombre de déclenchement",
                             hover_name="Adresse",
                             size_max=60, zoom=10,
-                            color_continuous_scale=px.colors.sequential.dense,
+                            color_continuous_scale=px.colors.sequential.Bluered,
                             map_style="carto-positron")
 
         return fig
