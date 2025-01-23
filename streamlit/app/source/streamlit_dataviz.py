@@ -221,8 +221,9 @@ def carto_adresse_srr(df):
         fig = px.scatter_map(df_merged,
                             lat="Latitude", lon="Longitude",
                             color="Pourcentage", size="Nombre de déclenchement",
-                            hover_name="Nombre de déclenchement",
+                            hover_name="Adresse",
                             size_max=60, zoom=10,
+                            color_continuous_scale=px.colors.sequential.dense,
                             map_style="carto-positron")
 
         return fig
@@ -236,8 +237,9 @@ def carto_adresse_orre(df):
         fig = px.scatter_map(df,
                             lat="Latitude", lon="Longitude",
                             color="Pourcentage", size="Nombre de déclenchement",
-                            hover_name="Nombre de déclenchement",
+                            hover_name="Adresse",
                             size_max=60, zoom=10,
+                            color_continuous_scale=px.colors.sequential.dense,
                             map_style="carto-positron")
         return fig
     except Exception as e:
@@ -250,8 +252,9 @@ def carto_adresse_tcoi(df):
         fig = px.scatter_map(df,
                             lat="Latitude", lon="Longitude",
                             color="Pourcentage", size="Nombre de déclenchement",
-                            hover_name="Nombre de déclenchement",
+                            hover_name="Adresse",
                             size_max=60, zoom=10,
+                            color_continuous_scale=px.colors.sequential.dense,
                             map_style="carto-positron")
 
         return fig
