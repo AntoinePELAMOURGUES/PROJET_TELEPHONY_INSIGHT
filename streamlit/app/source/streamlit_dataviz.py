@@ -220,17 +220,11 @@ def carto_adresse_srr(df):
         df_merged[['Latitude', 'Longitude']] = df_merged.apply(lambda row: gauss_laborde_to_wgs84(row['Coordonnée X'], row['Coordonnée Y']), axis=1, result_type='expand')
         fig = px.scatter_map(df_merged,
                             lat="Latitude", lon="Longitude",
-                            color="Adresse", size="Nombre de déclenchement",
+                            color="Pourcentage", size="Nombre de déclenchement",
                             hover_name="Nombre de déclenchement",
                             size_max=60, zoom=10,
                             map_style="carto-positron")
-        fig.update_layout(legend=dict(
-            orientation="h",  # Orientation horizontale
-            yanchor="top",    # Ancrage vertical en haut
-            y=-0.2,           # Position verticale sous la carte
-            xanchor="center",  # Ancrage horizontal au centre
-            x=0.5             # Position horizontale au centre
-        ))
+
         return fig
     except Exception as e:
         print(f"Erreur lors de la création de la carte des adresses: {e}")
@@ -241,17 +235,10 @@ def carto_adresse_orre(df):
     try:
         fig = px.scatter_map(df,
                             lat="Latitude", lon="Longitude",
-                            color="Adresse", size="Nombre de déclenchement",
+                            color="Pourcentage", size="Nombre de déclenchement",
                             hover_name="Nombre de déclenchement",
                             size_max=60, zoom=10,
                             map_style="carto-positron")
-        fig.update_layout(legend=dict(
-            orientation="h",  # Orientation horizontale
-            yanchor="top",    # Ancrage vertical en haut
-            y=-0.2,           # Position verticale sous la carte
-            xanchor="center",  # Ancrage horizontal au centre
-            x=0.5             # Position horizontale au centre
-        ))
         return fig
     except Exception as e:
         print(f"Erreur lors de la création de la carte ORRE: {e}")
@@ -262,18 +249,10 @@ def carto_adresse_tcoi(df):
     try:
         fig = px.scatter_map(df,
                             lat="Latitude", lon="Longitude",
-                            color="Adresse", size="Nombre de déclenchement",
+                            color="Pourcentage", size="Nombre de déclenchement",
                             hover_name="Nombre de déclenchement",
                             size_max=60, zoom=10,
                             map_style="carto-positron")
-
-        fig.update_layout(legend=dict(
-            orientation="h",  # Orientation horizontale
-            yanchor="top",    # Ancrage vertical en haut
-            y=-0.2,           # Position verticale sous la carte
-            xanchor="center",  # Ancrage horizontal au centre
-            x=0.5             # Position horizontale au centre
-        ))
 
         return fig
     except Exception as e:
