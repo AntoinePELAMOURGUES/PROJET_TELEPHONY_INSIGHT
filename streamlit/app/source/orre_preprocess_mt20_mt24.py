@@ -83,12 +83,14 @@ def preprocess_data(file1):
         df['IMSI'] = df['IMSI'].astype('str')
         df['IMSI'] = df['IMSI'].str.replace('.0', '')
     if 'Abonné' in df.columns:
+        df['Abonné'] = df['Abonné'].astype('str')
         df['Abonné'] = df['Abonné'].replace(r'^0693', '262693', regex=True)
         df['Abonné'] = df['Abonné'].replace(r'^0692', '262692', regex=True)
         df['Abonné'] = df['Abonné'].replace(r'^06', '336', regex=True)
         # Remplacer les NaN par 'Data'
         df['Abonné'] = df['Abonné'].fillna('Data')
     if 'Correspondant' in df.columns:
+        df['Correspondant'] = df['Correspondant'].astype('str')
         df['Correspondant'] = df['Correspondant'].str.split(',').str[0]
         df['Correspondant'] = df['Correspondant'].replace(r'^0693', '262693', regex=True)
         df['Correspondant'] = df['Correspondant'].replace(r'^0692', '262692', regex=True)
@@ -98,6 +100,8 @@ def preprocess_data(file1):
         df['Correspondant'] = df['Correspondant'].fillna('Data')
         # Remplacer les NaN par 'Data'
         df['Correspondant'] = df['Correspondant'].fillna('Data')
+    if 'Durée' in df.columns:
+        df['Durée'] = df['Durée'].astype('str')
     if 'Adresse' in df.columns:
         df['Adresse'] = df['Adresse'].str.upper()
     if 'Ville' in df.columns:
