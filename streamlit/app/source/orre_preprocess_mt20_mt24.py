@@ -12,7 +12,7 @@ def extract_city(address):
     return None  # Retourne None si aucune correspondance n'est trouvée ou si l'adresse n'est pas une chaîne
 
 def preprocess_data(file1):
-     # Liste des colonnes attendues
+    # Liste des colonnes attendues
     expected_columns = [
         "Date de début d'appel",
         "MSISDN Abonné",
@@ -25,6 +25,10 @@ def preprocess_data(file1):
     ]
     # Lire à nouveau avec usecols
     df = pd.read_csv(file1, header=1, sep=';', encoding='latin1')
+    available_columns = df.columns.tolist()
+    # Filtrer les colonnes attendues qui sont disponibles
+    filtered_columns = list(set(expected_columns) & set(available_columns))
+    df = df[filtered_columns]
     rename_dict = {
         "Date de début d'appel": "Date",
         "MSISDN Abonné": "Abonné",
