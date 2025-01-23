@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import re
+import streamlit as st
 
 def extract_city(address):
     if isinstance(address, str):  # Vérifie si l'adresse est une chaîne
@@ -10,12 +11,12 @@ def extract_city(address):
             return match.group(1).strip()  # Retourne la ville sans espaces superflus
     return None  # Retourne None si aucune correspondance n'est trouvée ou si l'adresse n'est pas une chaîne
 
+@st.cache_data
 def preprocess_data(file1):
     # Lire le fichier sans usecols pour vérifier les colonnes
-    df = pd.read_csv(file1, header=1, sep=';', encoding='latin1')
+    df = pd.read_csv(file1, header=1, encoding='latin1')
     # Vérifier les colonnes disponibles
     available_columns = df.columns.tolist()
-
     # Liste des colonnes attendues
     expected_columns = [
         "Date de début d'appel",
@@ -28,9 +29,9 @@ def preprocess_data(file1):
         "IMSI abonné"
     ]
     # Filtrer uniquement les colonnes qui existent dans le DataFrame
-    usecols = [col for col in expected_columns if col in available_columns]
+    data_usecols = [col for col in expected_columns if col in available_columns]
     # Lire à nouveau avec usecols
-    df = pd.read_csv(file1, header=1, sep=';', encoding='latin1', usecols=usecols)
+    df = pd.read_csv(file1, header=1, sep=';', encoding='latin1', usecols=data_usecols, dtype={"IMEI abonné": str})
     rename_dict = {
         "Date de début d'appel": "Date",
         "MSISDN Abonné": "Abonné",
