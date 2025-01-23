@@ -118,14 +118,23 @@ def comm_histo_monthly(df):
 # Créer un histogramme du nombre de communications par jour de la semaine
 def comm_histo_weekday(df):
     try:
+        # Définir l'ordre des jours de la semaine
+        jours_semaine = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
+        df['Jour de la semaine'] = pd.Categorical(df['Jour de la semaine'], categories=jours_semaine, ordered=True)
+
+        # Créer l'histogramme
         fig_weekday = go.Figure()
         fig_weekday.add_trace(go.Histogram(x=df['Jour de la semaine'],
                                             histfunc='count',
                                             name='Communications par jour de la semaine',
                                             marker=dict(line=dict(color='black', width=1))))
+
+        # Mettre à jour la mise en page
         fig_weekday.update_layout(title='Nombre de communications par jour de la semaine',
                                    xaxis_title='Jour de la semaine',
-                                   yaxis_title='Nombre de communications')
+                                   yaxis_title='Nombre de communications',
+                                   xaxis=dict(type='category'))  # Assurez-vous que l'axe X est traité comme une catégorie
+
         return fig_weekday
     except Exception as e:
         print(f"Erreur lors de la création de l'histogramme par jour de la semaine: {e}")
