@@ -79,6 +79,9 @@ def preprocess_data(file1):
     if 'IMEI' in df.columns:
         df['IMEI'] = df['IMEI'].astype('str')
         df['IMEI'] = df['IMEI'].str.replace('.0', '')
+    if 'IMSI' in df.columns:
+        df['IMSI'] = df['IMSI'].astype('str')
+        df['IMSI'] = df['IMSI'].str.replace('.0', '')
     if 'Abonné' in df.columns:
         df['Abonné'] = df['Abonné'].replace(r'^0693', '262693', regex=True)
         df['Abonné'] = df['Abonné'].replace(r'^0692', '262692', regex=True)

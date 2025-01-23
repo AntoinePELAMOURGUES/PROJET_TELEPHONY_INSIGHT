@@ -246,6 +246,11 @@ def carto_adresse_tcoi(df):
         print(f"Erreur lors de la création de la carte des adresses: {e}")
         return go.Figure()
 
+@st.cache_data
+def convert_df(df):
+    # IMPORTANT: Cache the conversion to prevent computation on every rerun
+    return df.to_csv().encode("utf-8")
+
 
 def visualisation_data(df, operateur: str):
     if 'Date' in df.columns:
@@ -273,6 +278,7 @@ def visualisation_data(df, operateur: str):
         expected_columns = ['Date', 'Abonné', 'Correspondant', "Type d'appel", 'Durée', 'Adresse', 'Ville', 'IMEI', 'IMSI']
         expected_columns_filter = ["Type d'appel", "Correspondant", "IMEI", "IMSI", "Ville", "Adresse"]
     else :
+        st.write("❌ Votre fichier ne contient aucune donnée concernant les adresses ou les villes.")
         expected_columns = ['Date', 'Abonné', 'Correspondant', "Type d'appel", 'Durée', 'IMEI', 'IMSI']
         expected_columns_filter = ["Type d'appel", "Correspondant", "IMEI", "IMSI"]
     # Interface pour appliquer un filtre supplémentaire
@@ -295,12 +301,13 @@ def visualisation_data(df, operateur: str):
     st.write(filtered_df)
 
     # Bouton pour télécharger les données filtrées au format CSV
-    csv = filtered_df.to_csv(index=False)
+    csv = convert_df(filtered_df)
     st.download_button(
-        label="Télécharger les données filtrées en CSV",
+        label="Télécharger les données en CSV",
         data=csv,
         file_name='données_complètes.csv',
-        mime='text/csv'
+        mime='text/csv',
+        icon = "⬇️"
     )
 
     st.markdown("---")
@@ -312,12 +319,13 @@ def visualisation_data(df, operateur: str):
         st.write(corr)
 
         # Bouton pour télécharger les résultats de corr en CSV
-        corr_csv = corr.to_csv(index=False)
+        corr_csv = convert_df(corr)
         st.download_button(
             label="Télécharger les communications par correspondant",
             data=corr_csv,
             file_name='communications_par_correspondant.csv',
-            mime='text/csv'
+            mime='text/csv',
+            icon = "⬇️"
         )
     else:
         st.write("❌ La colonne 'Correspondant' n'est pas disponible.")
@@ -340,12 +348,13 @@ def visualisation_data(df, operateur: str):
         imei = count_IMEI(df)
         st.write(imei)
 
-        imei_csv = imei.to_csv(index=False)
+        imei_csv = convert_df(imei)
         st.download_button(
             label="Télécharger les communications par IMEI",
             data=imei_csv,
             file_name='communications_par_imei.csv',
-            mime='text/csv'
+            mime='text/csv',
+            icon = "⬇️"
         )
     else:
         st.write("❌ La colonne 'IMEI' n'est pas disponible.")
@@ -356,12 +365,13 @@ def visualisation_data(df, operateur: str):
         imsi = count_IMSI(df)
         st.write(imsi)
 
-        imsi_csv = imsi.to_csv(index=False)
+        imsi_csv = convert_df(imsi)
         st.download_button(
             label="Télécharger les communications par IMSI",
             data=imsi_csv,
             file_name='communications_par_imsi.csv',
-            mime='text/csv'
+            mime='text/csv',
+            icon = "⬇️"
         )
     else:
         st.write("❌ La colonne 'IMSI' n'est pas disponible.")
@@ -386,12 +396,13 @@ def visualisation_data(df, operateur: str):
         st.write("Nombre de communications par adresse du relais :")
 
         adresse_co = adresse_count(df)
-        adresse_co_csv = adresse_co.to_csv(index=False)
+        adresse_co_csv = convert_df(adresse_co)
         st.download_button(
             label="Télécharger le nombre de communications par adresse",
             data=adresse_co_csv,
             file_name='communications_par_adresse.csv',
-            mime='text/csv'
+            mime='text/csv',
+            icon = "⬇️"
         )
         st.write(adresse_co)
 
