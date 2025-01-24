@@ -360,6 +360,7 @@ def visualisation_data(df, operateur: str):
 
     # Afficher le nombre de communications par IMEI et IMSI
     if 'IMEI' in df.columns:
+        st.markdown("---")
         st.write("Nombre de communications par IMEI :")
         imei, shape = count_IMEI(df)
         st.write(imei)
@@ -405,6 +406,7 @@ def visualisation_data(df, operateur: str):
     else:
         st.write("❌ La colonne 'IMSI' n'est pas disponible.")
 
+    st.markdown("---")
     # Histogrammes des communications
     if not df.empty:  # Vérifier que le DataFrame n'est pas vide avant d'afficher les histogrammes
         comm_histo_glo = comm_histo_global(df)
