@@ -125,7 +125,7 @@ def preprocess_data(file1):
         df['CIBLE'] = df['CIBLE'].replace(r'^0692', '262692', regex=True)
         df['CIBLE'] = df['CIBLE'].replace(r'^0693', '262693', regex=True)
         df['CIBLE'] = df['CIBLE'].replace(r'^06', '336', regex=True)
-    if "VILLE" in df.colmuns:
+    if "VILLE" in df.columns:
         df['VILLE'] = df.apply(replace_unknown_ville, axis=1)
         df['VILLE'] = df['VILLE'].str.upper()
         df['VILLE']= df['VILLE'].str.replace("-", " ")
@@ -133,7 +133,7 @@ def preprocess_data(file1):
         df['VILLE']= df['VILLE'].str.replace("SAINTE", "STE")
         df['VILLE']= df['VILLE'].str.replace("L'", "")
         df['VILLE'] = df['VILLE'].str.replace("É", "E", regex=False)
-    if "VILLE" in df.colmuns and "CODE POSTAL" in df.columns and "VILLE" in df.columns:
+    if "VILLE" in df.columns and "CODE POSTAL" in df.columns and "VILLE" in df.columns:
         df["Adresse"] = df["ADRESSE2"] + ", " + df["CODE POSTAL"] + " " + df["VILLE"]
         df['Adresse'] = df['Adresse'].str.upper()
     rename_dict = {"TYPE": "Type d'appel", "CORRESPONDANT": "Correspondant", "CIBLE": "Abonné", "DIRECTION": "Direction", "DUREE": "Durée", "VILLE": "Ville", "X": "Latitude", "Y": "Longitude", "converted_date": "Date"
