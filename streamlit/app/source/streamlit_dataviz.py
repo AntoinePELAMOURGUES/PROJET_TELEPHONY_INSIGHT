@@ -377,7 +377,7 @@ def visualisation_data(df, operateur: str):
             total_days = (df['Date'].max() - df['Date'].min()).days
             fig = px.histogram(df, x="Date", color = "IMEI", nbins=total_days, title="Répartition IMSI sur la période")
             fig.update_layout(bargap=0.01)
-            fig.show()
+            st.plotly_chart(fig)
     else:
         st.write("❌ La colonne 'IMEI' n'est pas disponible.")
 
@@ -400,7 +400,7 @@ def visualisation_data(df, operateur: str):
             total_days = (df['Date'].max() - df['Date'].min()).days
             fig = px.histogram(df, x="Date", color = "IMSI", nbins=total_days, title="Répartition IMSI sur la période")
             fig.update_layout(bargap=0.01)
-            fig.show()
+            st.plotly_chart(fig)
 
     else:
         st.write("❌ La colonne 'IMSI' n'est pas disponible.")
