@@ -72,9 +72,9 @@ def preprocess_data(file1):
     if 'DATE' in df.columns:
         df['converted_date'] = df['DATE'].apply(convert_date)
         # Extraire l'année, le mois et le jour de la semaine
-        df['Années'] = df['DATE'].dt.year
-        df['Mois'] = df['DATE'].dt.month
-        df['Jour de la semaine'] = df['DATE'].dt.day_name()
+        df['Années'] = df['converted_date'].dt.year
+        df['Mois'] = df['converted_date'].dt.month
+        df['Jour de la semaine'] = df['converted_date'].dt.day_name()
         # Mapper les jours de la semaine en français
         jours_semaine_fr = {
             'Monday': 'Lundi',
