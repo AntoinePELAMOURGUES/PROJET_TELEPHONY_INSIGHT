@@ -67,7 +67,7 @@ def replace_unknown_ville(row):
 
 def preprocess_data(file1):
     expected_columns = ["TYPE", "DATE", "CIBLE", "CORRESPONDANT", "DIRECTION", "DUREE", "IMSI", "IMEI", "ADRESSE2", "CODE POSTAL", "VILLE", "X", "Y"]
-    df = pd.read_csv(file1, sep=';', encoding='latin1', usecols= lambda col : col in expected_columns)
+    df = pd.read_csv(file1, sep=';', encoding='latin1', dtype={"CIBLE": str, "CORRESPONDANT": str, "DUREE": str, "IMSI": str, "IMEI": str, "CODE POSTAL": str,  "X": str, "Y": str})
     # Appliquer la fonction pour convertir les dates
     if 'DATE' in df.columns:
         df['converted_date'] = df['DATE'].apply(convert_date)

@@ -13,6 +13,8 @@ def preprocess_data(file1, file2):
     available_columns_2 = df2.columns.tolist()
     # Filtrer les colonnes attendues qui sont disponibles
     filtered_columns_2 = list(set(expected_columns_file2) & set(available_columns_2))
+    df1 = df1[filtered_columns_1]
+    df2 = df2[filtered_columns_2]
     if 'Date' in df1.columns:
         df1['Date'] = pd.to_datetime(df1['Date'])
         # Extraire l'année, le mois et le jour de la semaine
