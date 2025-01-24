@@ -95,6 +95,7 @@ def preprocess_data(file1):
         df['Correspondant'] = df['Correspondant'].fillna('Data')
         df['Correspondant'] = df['Correspondant'].astype('str')
         df['Correspondant'] = df['Correspondant'].str.split(',').str[0]
+        df['Correspondant'] = df['Correspondant'].str.replace('.0', '')
         df['Correspondant'] = df['Correspondant'].replace(r'^0693', '262693', regex=True)
         df['Correspondant'] = df['Correspondant'].replace(r'^0692', '262692', regex=True)
         df['Correspondant'] = df['Correspondant'].replace(r'^06', '336', regex=True)
@@ -112,5 +113,7 @@ def preprocess_data(file1):
         df['Ville']= df['Ville'].str.replace("SAINTE", "STE")
         df['Ville']= df['Ville'].str.replace("L'", "")
         df['Ville'] = df['Ville'].str.replace("É", "E", regex=False)
+        df['Adresse'] = df['Adresse'].fillna('Non précisé')
+        df['Ville'] = df['Ville'].fillna('Non précisé')
     return df
 
