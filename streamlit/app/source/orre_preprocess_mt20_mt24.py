@@ -24,7 +24,7 @@ def preprocess_data(file1):
         "IMSI abonné"
     ]
     # Lire à nouveau avec usecols
-    df = pd.read_csv(file1, header=1, sep=';', encoding='latin1')
+    df = pd.read_csv(file1, header=1, sep=';', encoding='latin1', dtype={"MSISDN Abonné": str, "Correspondant": str, "IMEI abonné": str, "IMSI abonné": str, "Durée / Nbr SMS": str})
     available_columns = df.columns.tolist()
     # Filtrer les colonnes attendues qui sont disponibles
     filtered_columns = list(set(expected_columns) & set(available_columns))
@@ -78,31 +78,21 @@ def preprocess_data(file1):
         df['Jour de la semaine'] = df['Jour de la semaine'].map(jours_semaine_fr)
     if 'IMEI' in df.columns:
         df['IMEI'] = df['IMEI'].fillna('Indeterminé')
-        df['IMEI'] = df['IMEI'].astype('str')
-        df['IMEI'] = df['IMEI'].str.replace('.0', '')
     if 'IMSI' in df.columns:
         df['IMSI'] = df['IMSI'].fillna('Indeterminé')
-        df['IMSI'] = df['IMSI'].astype('str')
-        df['IMSI'] = df['IMSI'].str.replace('.0', '')
     if 'Abonné' in df.columns:
-        df['Abonné'] = df['Abonné'].astype('str')
         df['Abonné'] = df['Abonné'].replace(r'^0693', '262693', regex=True)
         df['Abonné'] = df['Abonné'].replace(r'^0692', '262692', regex=True)
         df['Abonné'] = df['Abonné'].replace(r'^06', '336', regex=True)
-        # Remplacer les NaN par 'Data'
         df['Abonné'] = df['Abonné'].fillna('Data')
     if 'Correspondant' in df.columns:
         df['Correspondant'] = df['Correspondant'].fillna('Data')
-        df['Correspondant'] = df['Correspondant'].astype('str')
-        df['Correspondant'] = df['Correspondant'].str.replace('.0', '')
         df['Correspondant'] = df['Correspondant'].replace(r'^0693', '262693', regex=True)
         df['Correspondant'] = df['Correspondant'].replace(r'^0692', '262692', regex=True)
         df['Correspondant'] = df['Correspondant'].replace(r'^06', '336', regex=True)
         df['Correspondant'] = df['Correspondant'].replace(r'^07', '337', regex=True)
         df['Correspondant'] = df['Correspondant'].replace(r'^02', '2622', regex=True)
         df['Correspondant'] = df['Correspondant'].str.split(',').str[0]
-    if 'Durée' in df.columns:
-        df['Durée'] = df['Durée'].astype('str')
     if 'Adresse' in df.columns:
         df['Adresse'] = df['Adresse'].str.upper()
         # Appliquer la fonction pour créer une nouvelle colonne 'Ville'
@@ -113,7 +103,6 @@ def preprocess_data(file1):
         df['Ville']= df['Ville'].str.replace("SAINTE", "STE")
         df['Ville']= df['Ville'].str.replace("L'", "")
         df['Ville'] = df['Ville'].str.replace("É", "E", regex=False)
-        df['Adresse'] = df['Adresse'].fillna('Non précisé')
-        df['Ville'] = df['Ville'].fillna('Non précisé')
+
     return df
 
