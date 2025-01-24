@@ -45,7 +45,7 @@ def count_IMEI(df):
     try:
         imei_counts = df['IMEI'].value_counts().reset_index()
         imei_counts.columns = ['IMEI', 'Nombre de communication']
-        return imei_counts
+        return imei_counts, imei_counts.shape[0]
     except Exception as e:
         print(f"Erreur lors du comptage des IMEI: {e}")
         return pd.DataFrame()
@@ -55,7 +55,7 @@ def count_IMSI(df):
     try:
         imsi_counts = df['IMSI'].value_counts().reset_index()
         imsi_counts.columns = ['IMSI', 'Nombre de communication']
-        return imsi_counts
+        return imsi_counts, imsi_counts.shape[0]
     except Exception as e:
         print(f"Erreur lors du comptage des IMSI: {e}")
         return pd.DataFrame()
@@ -361,7 +361,7 @@ def visualisation_data(df, operateur: str):
     # Afficher le nombre de communications par IMEI et IMSI
     if 'IMEI' in df.columns:
         st.write("Nombre de communications par IMEI :")
-        imei = count_IMEI(df)
+        imei, shape = count_IMEI(df)
         st.write(imei)
 
         imei_csv = convert_df(imei)
@@ -373,7 +373,7 @@ def visualisation_data(df, operateur: str):
             icon = "⬇️"
         )
 
-        if imei.shape[0] > 1:
+        if shape > 1:
             total_days = (df['Date'].max() - df['Date'].min()).days
             fig = px.histogram(df, x="Date", color = "IMEI", nbins=total_days, title="Répartition IMSI sur la période")
             fig.update_layout(bargap=0.01)
@@ -384,7 +384,7 @@ def visualisation_data(df, operateur: str):
     if 'IMSI' in df.columns:
         st.markdown("---")
         st.write("Nombre de communications par IMSI :")
-        imsi = count_IMSI(df)
+        imsi, shape = count_IMSI(df)
         st.write(imsi)
 
         imsi_csv = convert_df(imsi)
@@ -396,7 +396,7 @@ def visualisation_data(df, operateur: str):
             icon = "⬇️"
         )
 
-        if imsi.shape[0] > 1:
+        if shape > 1:
             total_days = (df['Date'].max() - df['Date'].min()).days
             fig = px.histogram(df, x="Date", color = "IMSI", nbins=total_days, title="Répartition IMSI sur la période")
             fig.update_layout(bargap=0.01)
