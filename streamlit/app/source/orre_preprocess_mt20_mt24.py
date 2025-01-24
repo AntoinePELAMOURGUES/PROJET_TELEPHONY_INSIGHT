@@ -104,10 +104,9 @@ def preprocess_data(file1):
         df['Durée'] = df['Durée'].astype('str')
     if 'Adresse' in df.columns:
         df['Adresse'] = df['Adresse'].str.upper()
-    if 'Ville' in df.columns:
-        df['Ville'] = df['Ville'].str.upper()
         # Appliquer la fonction pour créer une nouvelle colonne 'Ville'
         df['Ville'] = df['Adresse'].apply(extract_city)
+        df['Ville'] = df['Ville'].str.upper()
         df['Ville']= df['Ville'].str.replace("-", " ")
         df['Ville']= df['Ville'].str.replace("SAINT", "ST")
         df['Ville']= df['Ville'].str.replace("SAINTE", "STE")
