@@ -372,6 +372,12 @@ def visualisation_data(df, operateur: str):
             mime='text/csv',
             icon = "⬇️"
         )
+
+        if imei.shape[0] > 1:
+            total_days = (df['Date'].max() - df['Date'].min()).days
+            fig = px.histogram(df, x="Date", color = "IMEI", nbins=total_days, title="Répartition IMSI sur la période")
+            fig.update_layout(bargap=0.01)
+            fig.show()
     else:
         st.write("❌ La colonne 'IMEI' n'est pas disponible.")
 
@@ -389,6 +395,13 @@ def visualisation_data(df, operateur: str):
             mime='text/csv',
             icon = "⬇️"
         )
+
+        if imsi.shape[0] > 1:
+            total_days = (df['Date'].max() - df['Date'].min()).days
+            fig = px.histogram(df, x="Date", color = "IMSI", nbins=total_days, title="Répartition IMSI sur la période")
+            fig.update_layout(bargap=0.01)
+            fig.show()
+
     else:
         st.write("❌ La colonne 'IMSI' n'est pas disponible.")
 
