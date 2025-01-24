@@ -95,12 +95,12 @@ def preprocess_data(file1):
         df['Correspondant'] = df['Correspondant'].fillna('Data')
         df['Correspondant'] = df['Correspondant'].astype('str')
         df['Correspondant'] = df['Correspondant'].str.replace('.0', '')
-        df['Correspondant'] = df['Correspondant'].str.split(',').str[0]
         df['Correspondant'] = df['Correspondant'].replace(r'^0693', '262693', regex=True)
         df['Correspondant'] = df['Correspondant'].replace(r'^0692', '262692', regex=True)
         df['Correspondant'] = df['Correspondant'].replace(r'^06', '336', regex=True)
         df['Correspondant'] = df['Correspondant'].replace(r'^07', '337', regex=True)
         df['Correspondant'] = df['Correspondant'].replace(r'^02', '2622', regex=True)
+        df['Correspondant'] = df['Correspondant'].str.split(',').str[0]
     if 'Durée' in df.columns:
         df['Durée'] = df['Durée'].astype('str')
     if 'Adresse' in df.columns:
