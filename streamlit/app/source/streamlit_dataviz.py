@@ -446,12 +446,8 @@ def visualisation_data(df, operateur: str):
         st.plotly_chart(scatter)
 
     # Cartographie des relais déclenchés selon l'opérateur
-    if operateur == 'SRR':
-        carto = carto_adresse_srr(df)
-        if carto is not None:
-            st.plotly_chart(carto)
 
-    elif operateur == "TCOI":
+    if operateur == "TCOI":
         if 'Adresse' in df.columns and 'Latitude' in df.columns and 'Longitude' in df.columns:
             df_unique = df[['Adresse', 'Latitude', 'Longitude']].drop_duplicates()
             df_merged = adresse_co.merge(df_unique, on='Adresse', how='left')
@@ -459,7 +455,7 @@ def visualisation_data(df, operateur: str):
             if carto is not None:
                 st.plotly_chart(carto)
 
-    elif operateur == 'ORRE':
+    else :
         if 'Adresse' in df.columns:
             adresse_co['Coordinates'] = adresse_co['Adresse'].apply(geocode_address_datagouv)
             adresse_co[['Latitude', 'Longitude']] = pd.DataFrame(adresse_co['Coordinates'].tolist(), index=adresse_co.index)
