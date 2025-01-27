@@ -18,7 +18,7 @@ def preprocess_data(file1, file2):
     df1.Abonné.bfill(inplace=True)
     df2 = df2[filtered_columns_2]
     df = df1.merge(df2, on="CIREF", how="left")
-    deleted_columns =['Critère Recherché_x', 'Commentaire_x', '3ème interlocuteur', 'IMEI', 'IMSI', 'Nature Correspondant',
+    deleted_columns =['Critère Recherché_x', 'Commentaire_x', '3ème interlocuteur', 'Nature Correspondant',
        'Nature 3ème interlocuteur', 'GCI_x', 'EGCI_x', 'NGCI_x', 'Code PLMN',
        'Volume de données montant', 'Volume de données descendant',"Opérateur d'itinérance", 'Indicateur RO', 'Décalage horaire',
        'Service de Base', 'IPV4 VO Wifi', 'IPV6 VO Wifi',
