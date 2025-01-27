@@ -128,13 +128,15 @@ def preprocess_data(file1):
     df['VILLE'] = df['VILLE'].str.replace("É", "E", regex=False)
     df['ADRESSE2'] = df['ADRESSE2'].fillna("INDETERMINE")
     df['CODE POSTAL'] = df['CODE POSTAL'].fillna("INDETERMINE")
-    if df['ADRESSE2'] != "INDETERMINE":
-        df["Adresse"] = df["ADRESSE2"] + " " + df["CODE POSTAL"] + " " + df["VILLE"]
-    else:
-        df["Adresse"] = 'INDETERMINE'
-    df['Adresse'] = df['Adresse'].str.replace(r'\s+', ' ', regex=True)
-    df['Adresse'] = df['Adresse'].str.upper()
-    df['Adresse'] = df['Adresse'].str.strip() # Supprimer les espaces inutiles
+    df['VILLE'] = df['VILLE'].fillna("INDETERMINE")
+     # Créer la colonne Adresse
+    df["Adresse"] = np.where(
+        df["ADRESSE2"] != "INDETERMINE",
+        df["ADRESSE2"] + " " + df["CODE POSTAL"] + " " + df["VILLE"],
+        'INDETERMINE'
+    )
+    # Nettoyer la colonne Adresse
+    df['Adresse'] = df['Adresse'].str.replace(r'\s+', ' ', regex=True).str.strip()
     deleted_columns = ['DATE', 'TYPE CORRESPONDANT', 'COMP.', 'EFFICACITE' , 'CELLID', 'ADRESSE IP VO WIFI', 'PORT SOURCE VO WIFI', 'ADRESSE2','ADRESSE3','ADRESSE4', 'ADRESSE5', 'PAYS', 'TYPE-COORD', 'CODE POSTAL']
     df.drop(columns=deleted_columns, inplace=True, errors='ignore')
     rename_dict = {"TYPE": "Type d'appel", "CORRESPONDANT": "Correspondant", "CIBLE": "Abonné", "DIRECTION": "Direction", "DUREE": "Durée", "VILLE": "Ville", "X": "Latitude", "Y": "Longitude", "converted_date": "Date"
