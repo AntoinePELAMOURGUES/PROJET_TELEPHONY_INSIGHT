@@ -259,7 +259,7 @@ def carto_adresse_tcoi(df):
             size_max=60,
             zoom=10,
             color_continuous_scale=px.colors.sequential.Bluered,
-            mapbox_style="carto-positron"
+            map_style="carto-positron"
         )
         return fig
     except Exception as e:
