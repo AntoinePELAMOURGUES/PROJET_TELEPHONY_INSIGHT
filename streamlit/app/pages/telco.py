@@ -22,10 +22,10 @@ if st.session_state.page == "tcoi":
 
     left, right = st.columns(2)
     if left.button("MT20", use_container_width=True):
-        st.session_state.page = "mt24"
+        st.session_state.page = "mt20"
 
     if right.button("MT24", use_container_width=True):
-        st.session_state.page = "mt20"
+        st.session_state.page = "mt24"
 
 # Logic for MT24 Page
 if st.session_state.page == "mt24" or st.session_state.page == "mt20":
