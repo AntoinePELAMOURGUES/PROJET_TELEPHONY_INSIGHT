@@ -66,7 +66,6 @@ def replace_unknown_ville(row):
     return row['VILLE']
 
 def preprocess_data(file1):
-    expected_columns = ["TYPE", "DATE", "CIBLE", "CORRESPONDANT", "DIRECTION", "DUREE", "IMSI", "IMEI", "ADRESSE2", "CODE POSTAL", "VILLE", "X", "Y"]
     df = pd.read_csv(file1, sep=';', encoding='latin1', dtype={"CIBLE": str, "CORRESPONDANT": str, "DUREE": str, "IMSI": str, "IMEI": str, "CODE POSTAL": str,  "X": str, "Y": str})
     # Appliquer la fonction pour convertir les dates
     if 'DATE' in df.columns:
@@ -134,8 +133,12 @@ def preprocess_data(file1):
         df['VILLE']= df['VILLE'].str.replace("L'", "")
         df['VILLE'] = df['VILLE'].str.replace("É", "E", regex=False)
     if "VILLE" in df.columns and "CODE POSTAL" in df.columns and "VILLE" in df.columns:
-        df["Adresse"] = df["ADRESSE2"] + ", " + df["CODE POSTAL"] + " " + df["VILLE"]
+        df["Adresse"] = df["ADRESSE2"] + " " + df["CODE POSTAL"] + " " + df["VILLE"]
+        df.fillna({'Adresse': 'INDETERMINE', 'VILLE' : 'INDETERMINE', 'CODE POSTAL' : 'INDETERMINE' }, inplace=True)
         df['Adresse'] = df['Adresse'].str.upper()
+        df['Adresse'] = df['Adresse'].str.strip() # Supprimer les espaces inutiles
+    deleted_columns = ['DATE', 'TYPE CORRESPONDANT', 'COMP.', 'EFFICACITE' , 'CELLID', 'ADRESSE IP VO WIFI', 'PORT SOURCE VO WIFI', 'ADRESSE2','ADRESSE3','ADRESSE4', 'ADRESSE5', 'PAYS', 'TYPE-COORD', 'CODE POSTAL']
+    df.drop(columns=deleted_columns, inplace=True, errors='ignore')
     rename_dict = {"TYPE": "Type d'appel", "CORRESPONDANT": "Correspondant", "CIBLE": "Abonné", "DIRECTION": "Direction", "DUREE": "Durée", "VILLE": "Ville", "X": "Latitude", "Y": "Longitude", "converted_date": "Date"
     }
     # Renommer uniquement les colonnes présentes dans le DataFrame

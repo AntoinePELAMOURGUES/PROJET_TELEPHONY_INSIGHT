@@ -411,9 +411,9 @@ def visualisation_data(df, operateur: str):
     if not df.empty:  # Vérifier que le DataFrame n'est pas vide avant d'afficher les histogrammes
         comm_histo_glo = comm_histo_global(df)
         st.plotly_chart(comm_histo_glo)
-
-        comm_histo_month = comm_histo_monthly(df)
-        st.plotly_chart(comm_histo_month)
+        if df.Mois.nunique() > 1:
+            comm_histo_month = comm_histo_monthly(df)
+            st.plotly_chart(comm_histo_month)
 
         comm_histo_week = comm_histo_weekday(df)
         st.plotly_chart(comm_histo_week)
@@ -448,12 +448,17 @@ def visualisation_data(df, operateur: str):
     # Cartographie des relais déclenchés selon l'opérateur
 
     if operateur == "TCOI":
-        if 'Adresse' in df.columns and 'Latitude' in df.columns and 'Longitude' in df.columns:
-            df_unique = df[['Adresse', 'Latitude', 'Longitude']].drop_duplicates()
-            df_merged = adresse_co.merge(df_unique, on='Adresse', how='left')
-            carto = carto_adresse_tcoi(df_merged)
-            if carto is not None:
-                st.plotly_chart(carto)
+        new_df = adresse_co.merge(df, on='Adresse', how='left')
+        # Convertir les colonnes en types appropriés si nécessaire
+        new_df['Latitude'] = pd.to_numeric(new_df['Latitude'], errors='coerce')
+        new_df['Longitude'] = pd.to_numeric(new_df['Longitude'], errors='coerce')
+        new_df['Pourcentage'] = pd.to_numeric(new_df['Pourcentage'], errors='coerce')
+        new_df['Nombre de déclenchement'] = pd.to_numeric(new_df['Nombre de déclenchement'], errors='coerce')
+        # Supprimer les lignes avec des valeurs manquantes dans les colonnes critiques
+        new_df.dropna(subset=['Latitude', 'Longitude', 'Pourcentage', 'Nombre de déclenchement'], inplace=True)
+        carto = carto_adresse_tcoi(new_df)
+        if carto is not None:
+            st.plotly_chart(carto)
 
     else :
         if 'Adresse' in df.columns:
