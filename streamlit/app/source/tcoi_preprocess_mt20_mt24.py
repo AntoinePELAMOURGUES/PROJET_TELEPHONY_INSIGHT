@@ -111,7 +111,7 @@ def preprocess_data(file1):
     df['CORRESPONDANT'] = df['CORRESPONDANT'].replace(r'^07', '337', regex=True)
     df['CORRESPONDANT'] = df['CORRESPONDANT'].replace(r'^02', '2622', regex=True)
     df["DUREE"] = df["DUREE"].fillna("0")
-    df['IMEI'] = df['IMEI'].fillna("Non précisé")
+    df['IMEI'] = df['IMEI'].fillna("INDETERMINE")
     df["IMEI"] = df["IMEI"].apply(clean_number)
     df['IMSI'] = df['IMSI'].apply(clean_number)
     df['CIBLE'] = df['CIBLE'].apply(clean_number)
@@ -126,9 +126,10 @@ def preprocess_data(file1):
     df['VILLE']= df['VILLE'].str.replace("L'", "")
     df['VILLE'] = df['VILLE'].str.replace("É", "E", regex=False)
     df["Adresse"] = df["ADRESSE2"] + " " + df["CODE POSTAL"] + " " + df["VILLE"]
-    df.fillna({'Adresse': 'INDETERMINE', 'VILLE' : 'INDETERMINE', 'CODE POSTAL' : 'INDETERMINE' }, inplace=True)
+    df['Adresse'] = df['Adresse'].fillna("INDETERMINE")
+    df['VILLE'] = df['VILLE'].fillna('INDETREMINE')
+    df['Adresse'] = df['Adresse'].str.replace(r'\s+', ' ', regex=True)
     df['Adresse'] = df['Adresse'].str.upper()
-    df['Adresse']= df['Adresse'].str.replace(r'\s+', ' ', regex=True)
     df['Adresse'] = df['Adresse'].str.strip() # Supprimer les espaces inutiles
     deleted_columns = ['DATE', 'TYPE CORRESPONDANT', 'COMP.', 'EFFICACITE' , 'CELLID', 'ADRESSE IP VO WIFI', 'PORT SOURCE VO WIFI', 'ADRESSE2','ADRESSE3','ADRESSE4', 'ADRESSE5', 'PAYS', 'TYPE-COORD', 'CODE POSTAL']
     df.drop(columns=deleted_columns, inplace=True, errors='ignore')
