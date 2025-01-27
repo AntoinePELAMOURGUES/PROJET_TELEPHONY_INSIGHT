@@ -118,6 +118,7 @@ def preprocess_data(file1):
     df['CIBLE'] = df['CIBLE'].replace(r'^0692', '262692', regex=True)
     df['CIBLE'] = df['CIBLE'].replace(r'^0693', '262693', regex=True)
     df['CIBLE'] = df['CIBLE'].replace(r'^06', '336', regex=True)
+    df['VILLE'] = df['VILLE'].fillna('INDETERMINE')
     df['VILLE'] = df.apply(replace_unknown_ville, axis=1)
     df['VILLE'] = df['VILLE'].str.upper()
     df['VILLE']= df['VILLE'].str.replace("-", " ")
@@ -125,9 +126,12 @@ def preprocess_data(file1):
     df['VILLE']= df['VILLE'].str.replace("SAINTE", "STE")
     df['VILLE']= df['VILLE'].str.replace("L'", "")
     df['VILLE'] = df['VILLE'].str.replace("É", "E", regex=False)
-    df["Adresse"] = df["ADRESSE2"] + " " + df["CODE POSTAL"] + " " + df["VILLE"]
-    df['Adresse'] = df['Adresse'].fillna("INDETERMINE")
-    df['VILLE'] = df['VILLE'].fillna('INDETREMINE')
+    df['ADRESSE2'] = df['ADRESSE2'].fillna("INDETERMINE")
+    df['CODE POSTAL'] = df['CODE POSTAL'].fillna("INDETERMINE")
+    if df['ADRESSE2'] != "INDETERMINE":
+        df["Adresse"] = df["ADRESSE2"] + " " + df["CODE POSTAL"] + " " + df["VILLE"]
+    else:
+        df["Adresse"] = 'INDETERMINE'
     df['Adresse'] = df['Adresse'].str.replace(r'\s+', ' ', regex=True)
     df['Adresse'] = df['Adresse'].str.upper()
     df['Adresse'] = df['Adresse'].str.strip() # Supprimer les espaces inutiles
