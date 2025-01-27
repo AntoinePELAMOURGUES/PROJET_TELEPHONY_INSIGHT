@@ -249,7 +249,7 @@ def carto_adresse_orre(df):
 # Créer une carte des adresses pour l'opérateur TCOI.
 def carto_adresse_tcoi(df):
     try:
-        fig = px.scatter_mapbox(
+        fig = px.scatter_map(
             df,
             lat="Latitude",
             lon="Longitude",
