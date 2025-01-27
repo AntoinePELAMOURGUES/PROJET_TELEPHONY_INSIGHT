@@ -249,17 +249,21 @@ def carto_adresse_orre(df):
 # Créer une carte des adresses pour l'opérateur TCOI.
 def carto_adresse_tcoi(df):
     try:
-        fig = px.scatter_map(df,
-                            lat="Latitude", lon="Longitude",
-                            color="Pourcentage", size="Nombre de déclenchement",
-                            hover_name="Adresse",
-                            size_max=60, zoom=10,
-                            color_continuous_scale=px.colors.sequential.Bluered,
-                            map_style="carto-positron")
-
+        fig = px.scatter_mapbox(
+            df,
+            lat="Latitude",
+            lon="Longitude",
+            color="Pourcentage",
+            size="Nombre de déclenchement",
+            hover_name="Adresse",
+            size_max=60,
+            zoom=10,
+            color_continuous_scale=px.colors.sequential.Bluered,
+            mapbox_style="carto-positron"
+        )
         return fig
     except Exception as e:
-        print(f"Erreur lors de la création de la carte des adresses: {e}")
+        st.error(f"Erreur lors de la création de la carte des adresses : {e}")
         return go.Figure()
 
 @st.cache_data
@@ -448,7 +452,6 @@ def visualisation_data(df, operateur: str):
     # Cartographie des relais déclenchés selon l'opérateur
 
     if operateur == "TCOI":
-        adresse_co = adresse_count(df)
         new_df = adresse_co.merge(df, on='Adresse', how='left')
         # Convertir les colonnes en types appropriés si nécessaire
         new_df['Latitude'] = pd.to_numeric(new_df['Latitude'], errors='coerce')
