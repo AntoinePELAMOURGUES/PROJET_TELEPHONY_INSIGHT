@@ -66,7 +66,7 @@ def replace_unknown_ville(row):
     return row['VILLE']
 
 def preprocess_data(file1):
-    df = pd.read_csv(file1, sep=';', encoding='latin1', dtype={"CIBLE": str, "CORRESPONDANT": str, "DUREE": str, "IMSI": str, "IMEI": str, "CODE POSTAL": str,  "X": str, "Y": str})
+    df = pd.read_csv(file1, sep=';', encoding='latin1', dtype={"CIBLE": str, "CORRESPONDANT": str, "DUREE": str, "IMSI": str, "IMEI": str, "CODE POSTAL": str,  "X": str, "Y": str, "VILLE": str, "ADRESSE2": str, "ADRESSE3": str, "ADRESSE4": str, "ADRESSE5": str})
     # Appliquer la fonction pour convertir les dates
     df['converted_date'] = df['DATE'].apply(convert_date)
     # Extraire l'année, le mois et le jour de la semaine
