@@ -14,6 +14,8 @@ def preprocess_data(file1, file2):
     # Filtrer les colonnes attendues qui sont disponibles
     filtered_columns_2 = list(set(expected_columns_file2) & set(available_columns_2))
     df1 = df1[filtered_columns_1]
+    df1.Abonné.ffill(inplace=True)
+    df1.Abonné.bfill(inplace=True)
     df2 = df2[filtered_columns_2]
     df = df1.merge(df2, on="CIREF", how="left")
     deleted_columns =['Critère Recherché_x', 'Commentaire_x', '3ème interlocuteur', 'IMEI', 'IMSI', 'Nature Correspondant',
