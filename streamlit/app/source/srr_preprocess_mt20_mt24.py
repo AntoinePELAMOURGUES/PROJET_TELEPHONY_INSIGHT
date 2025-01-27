@@ -63,8 +63,6 @@ def preprocess_data(file1, file2):
         # Remplacer les noms des jours par leur équivalent en français
         df['Jour de la semaine'] = df['Jour de la semaine'].map(jours_semaine_fr)
     if 'Abonné' in df.columns:
-        df['Abonné'] = df["Abonné"].ffill()
-        df['Abonné'] = df["Abonné"].bfill()
         df['Abonné'] = df['Abonné'].replace(r'^0693', '262693', regex=True)
         df['Abonné'] = df['Abonné'].replace(r'^0692', '262692', regex=True)
         df['Abonné'] = df['Abonné'].replace(r'^06', '336', regex=True)
@@ -85,7 +83,7 @@ def preprocess_data(file1, file2):
         df['Ville']= df['Ville'].str.replace("L'", "")
         df['Ville'] = df['Ville'].str.replace("É", "E", regex=False)
     if 'Adresse' in df.columns and 'Comp. adresse' in df.columns and 'Code postal' in df.columns:
-        df['adresse_complete'] = df['Adresse'] + "," + df['Code postal'] + " " + df['Ville']
+        df['adresse_complete'] = df['Adresse'] + " " + df['Code postal'] + " " + df['Ville']
         df['adresse_complete']= df['adresse_complete'].str.upper()
         df['adresse_complete']= df['adresse_complete'].str.replace(r'\s+', ' ', regex=True)
         df.fillna({'adresse_complete': 'INDETERMINE'}, inplace=True)
