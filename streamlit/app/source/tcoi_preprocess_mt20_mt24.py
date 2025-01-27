@@ -136,6 +136,7 @@ def preprocess_data(file1):
         df["Adresse"] = df["ADRESSE2"] + " " + df["CODE POSTAL"] + " " + df["VILLE"]
         df.fillna({'Adresse': 'INDETERMINE', 'VILLE' : 'INDETERMINE', 'CODE POSTAL' : 'INDETERMINE' }, inplace=True)
         df['Adresse'] = df['Adresse'].str.upper()
+        df['Adresse']= df['Adresse'].str.replace(r'\s+', ' ', regex=True)
         df['Adresse'] = df['Adresse'].str.strip() # Supprimer les espaces inutiles
     deleted_columns = ['DATE', 'TYPE CORRESPONDANT', 'COMP.', 'EFFICACITE' , 'CELLID', 'ADRESSE IP VO WIFI', 'PORT SOURCE VO WIFI', 'ADRESSE2','ADRESSE3','ADRESSE4', 'ADRESSE5', 'PAYS', 'TYPE-COORD', 'CODE POSTAL']
     df.drop(columns=deleted_columns, inplace=True, errors='ignore')

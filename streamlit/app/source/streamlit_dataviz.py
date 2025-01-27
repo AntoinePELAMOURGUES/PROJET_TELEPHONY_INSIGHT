@@ -448,6 +448,7 @@ def visualisation_data(df, operateur: str):
     # Cartographie des relais déclenchés selon l'opérateur
 
     if operateur == "TCOI":
+        adresse_co = adresse_count(df)
         new_df = adresse_co.merge(df, on='Adresse', how='left')
         # Convertir les colonnes en types appropriés si nécessaire
         new_df['Latitude'] = pd.to_numeric(new_df['Latitude'], errors='coerce')
