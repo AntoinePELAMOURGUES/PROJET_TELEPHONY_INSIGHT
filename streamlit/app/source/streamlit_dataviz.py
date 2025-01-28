@@ -269,7 +269,7 @@ def carto_adresse_tcoi(df):
 @st.cache_data
 def convert_df(df):
     # IMPORTANT: Cache the conversion to prevent computation on every rerun
-    return df.to_csv().encode("utf-8")
+    return df.to_csv(sep=';', index= False, encoding='utf-8')
 
 
 def visualisation_data(df, operateur: str):
@@ -322,13 +322,16 @@ def visualisation_data(df, operateur: str):
 
     # Bouton pour télécharger les données filtrées au format CSV
     csv = convert_df(filtered_df)
-    st.download_button(
-        label="Télécharger les données en CSV",
-        data=csv,
-        file_name='données_complètes.csv',
-        mime='text/csv',
-        icon = "⬇️"
-    )
+    try:
+        st.download_button(
+            label="Télécharger les données en CSV",
+            data=csv,
+            file_name='données_complètes.csv',
+            mime='text/csv',
+            icon = "⬇️"
+        )
+    except:
+        st.write("❌ Une erreur est survenue lors du téléchargement des données.")
 
     st.markdown("---")
 
@@ -340,13 +343,16 @@ def visualisation_data(df, operateur: str):
 
         # Bouton pour télécharger les résultats de corr en CSV
         corr_csv = convert_df(corr)
-        st.download_button(
-            label="Télécharger les communications par correspondant",
-            data=corr_csv,
-            file_name='communications_par_correspondant.csv',
-            mime='text/csv',
-            icon = "⬇️"
-        )
+        try:
+            st.download_button(
+                label="Télécharger les communications par correspondant",
+                data=corr_csv,
+                file_name='communications_par_correspondant.csv',
+                mime='text/csv',
+                icon = "⬇️"
+            )
+        except:
+            st.write("❌ Une erreur est survenue lors du téléchargement des données.")
     else:
         st.write("❌ La colonne 'Correspondant' n'est pas disponible.")
 
@@ -370,13 +376,16 @@ def visualisation_data(df, operateur: str):
         st.write(imei)
 
         imei_csv = convert_df(imei)
-        st.download_button(
-            label="Télécharger les communications par IMEI",
-            data=imei_csv,
-            file_name='communications_par_imei.csv',
-            mime='text/csv',
-            icon = "⬇️"
-        )
+        try:
+            st.download_button(
+                label="Télécharger les communications par IMEI",
+                data=imei_csv,
+                file_name='communications_par_imei.csv',
+                mime='text/csv',
+                icon = "⬇️"
+            )
+        except:
+            st.write("❌ Une erreur est survenue lors du téléchargement des données.")
 
         if shape > 1:
             total_days = (df['Date'].max() - df['Date'].min()).days
@@ -393,13 +402,16 @@ def visualisation_data(df, operateur: str):
         st.write(imsi)
 
         imsi_csv = convert_df(imsi)
-        st.download_button(
-            label="Télécharger les communications par IMSI",
-            data=imsi_csv,
-            file_name='communications_par_imsi.csv',
-            mime='text/csv',
-            icon = "⬇️"
-        )
+        try:
+            st.download_button(
+                label="Télécharger les communications par IMSI",
+                data=imsi_csv,
+                file_name='communications_par_imsi.csv',
+                mime='text/csv',
+                icon = "⬇️"
+            )
+        except:
+            st.write("❌ Une erreur est survenue lors du téléchargement des données.")
 
         if shape > 1:
             total_days = (df['Date'].max() - df['Date'].min()).days
@@ -432,13 +444,17 @@ def visualisation_data(df, operateur: str):
 
         adresse_co = adresse_count(df)
         adresse_co_csv = convert_df(adresse_co)
-        st.download_button(
-            label="Télécharger le nombre de communications par adresse",
-            data=adresse_co_csv,
-            file_name='communications_par_adresse.csv',
-            mime='text/csv',
-            icon = "⬇️"
-        )
+        try:
+            st.download_button(
+                label="Télécharger le nombre de communications par adresse",
+                data=adresse_co_csv,
+                file_name='communications_par_adresse.csv',
+                mime='text/csv',
+                icon = "⬇️"
+            )
+        except:
+            st.write("❌ Une erreur est survenue lors du téléchargement des données")
+
         st.write(adresse_co)
 
     else:
