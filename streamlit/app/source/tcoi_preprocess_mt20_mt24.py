@@ -129,6 +129,7 @@ def preprocess_data(file1):
     df['ADRESSE2'] = df['ADRESSE2'].fillna("INDETERMINE")
     df['CODE POSTAL'] = df['CODE POSTAL'].fillna("INDETERMINE")
     df['VILLE'] = df['VILLE'].fillna("INDETERMINE")
+    df['VILLE'] = df['VILLE'].str.replace(r'\s+', ' ', regex=True).str.strip()
      # Créer la colonne Adresse
     df["Adresse"] = np.where(
         df["ADRESSE2"] != "INDETERMINE",
