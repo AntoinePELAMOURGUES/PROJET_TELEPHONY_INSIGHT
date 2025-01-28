@@ -31,8 +31,8 @@ if st.session_state.page == "srr":
 if st.session_state.page == "mt24" or st.session_state.page == "mt20":
     st.write("Veuillez charger vos 2 fichiers xls :")
 
-    uploaded_file_1 = st.file_uploader("Fichier contenant les communications", type="xls")
-    uploaded_file_2 = st.file_uploader("Fichier contenant les localisations de relais", type="xls")
+    uploaded_file_1 = st.file_uploader("Fichier contenant les communications ('SRR_Detcom...')", type="xls")
+    uploaded_file_2 = st.file_uploader("Fichier contenant les localisations de relais ('SRR_Ident...)", type="xls")
 
     if uploaded_file_1 and uploaded_file_2:
         df = preprocess_data(uploaded_file_1, uploaded_file_2)
