@@ -443,6 +443,9 @@ def visualisation_data(df, operateur: str):
         st.write("Nombre de communications par adresse du relais :")
 
         adresse_co = adresse_count(df)
+
+        st.write(adresse_co)
+
         adresse_co_csv = convert_df(adresse_co)
         try:
             st.download_button(
@@ -455,10 +458,10 @@ def visualisation_data(df, operateur: str):
         except:
             st.write("❌ Une erreur est survenue lors du téléchargement des données")
 
-        st.write(adresse_co)
-
     else:
         st.write("❌ La colonne 'Adresse' n'est pas disponible.")
+
+    st.markdown("---")
 
     # Graphique scatter par ville
     if 'Ville' in df.columns:
