@@ -468,6 +468,7 @@ def visualisation_data(df, operateur: str):
         scatter = scatter_plot_ville(df)
         st.plotly_chart(scatter)
 
+    st.markdown("---")
     # Cartographie des relais déclenchés selon l'opérateur
 
     if operateur == "TCOI":
