@@ -137,6 +137,7 @@ def preprocess_data(file1):
     )
     # Nettoyer la colonne Adresse
     df['Adresse'] = df['Adresse'].str.replace(r'\s+', ' ', regex=True).str.strip()
+    df['Adresse'] = df['Adresse'].str.upper()
     deleted_columns = ['DATE', 'TYPE CORRESPONDANT', 'COMP.', 'EFFICACITE' , 'CELLID', 'ADRESSE IP VO WIFI', 'PORT SOURCE VO WIFI', 'ADRESSE2','ADRESSE3','ADRESSE4', 'ADRESSE5', 'PAYS', 'TYPE-COORD', 'CODE POSTAL']
     df.drop(columns=deleted_columns, inplace=True, errors='ignore')
     rename_dict = {"TYPE": "Type d'appel", "CORRESPONDANT": "Correspondant", "CIBLE": "Abonné", "DIRECTION": "Direction", "DUREE": "Durée", "VILLE": "Ville", "X": "Latitude", "Y": "Longitude", "converted_date": "Date"
