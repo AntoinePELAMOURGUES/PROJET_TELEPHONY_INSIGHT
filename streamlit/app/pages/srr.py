@@ -1,6 +1,7 @@
 import streamlit as st
 from source.srr_preprocess_mt20_mt24 import preprocess_data
 from source.streamlit_dataviz import visualisation_data
+import pandas as pd
 
 # Réinitialiser la page si elle est chargée
 if 'page' not in st.session_state:
@@ -35,6 +36,12 @@ if st.session_state.page == "mt24" or st.session_state.page == "mt20":
     uploaded_file_2 = st.file_uploader("Fichier contenant les localisations de relais ('SRR_Ident...)", type="xls")
 
     if uploaded_file_1 and uploaded_file_2:
+        fichier_excel = pd.ExcelFile(uploaded_file_1)
+        noms_feuilles = fichier_excel.sheet_names
+        if len(noms_feuilles) > 1:
+            st.warning("Le fichier contient plusieurs feuilles. Veuillez sélectionner la feuille contenant les données que vous souhaitez analyser:")
+            feuille = st.selectbox("Feuilles disponibles", noms_feuilles)
+            uploaded_file_1 = fichier_excel.parse(feuille)
         df = preprocess_data(uploaded_file_1, uploaded_file_2)
         st.markdown("---")
         visualisation_data(df, 'SRR')
