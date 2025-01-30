@@ -41,7 +41,8 @@ if st.session_state.page == "mt24" or st.session_state.page == "mt20":
         if len(noms_feuilles) > 1:
             st.warning("Le fichier contient plusieurs feuilles. Veuillez sélectionner la feuille contenant les données que vous souhaitez analyser:")
             feuille = st.selectbox("Feuilles disponibles", noms_feuilles)
-            uploaded_file_1 = fichier_excel.parse(feuille)
+            index_feuille = noms_feuilles.index(feuille)
+            df = preprocess_data(uploaded_file_1, uploaded_file_2, index_feuille)
         df = preprocess_data(uploaded_file_1, uploaded_file_2)
         st.markdown("---")
         visualisation_data(df, 'SRR')
