@@ -16,6 +16,19 @@ Afin de fournir une aide aux enquêteurs de la Réunion, il apparaissait nécess
 
 De nombreux enquêteurs n'ont pas une connaissance suffisante des outils de traitement de données, les amenant à négliger l'analyse de la téléphonie qui est pourtant un élément important des enquêtes actuelles. 
 
+<h2>:diamond_shape_with_a_dot_inside:Quelques images du projet..</h2>
+
+<table>
+    <tr>
+        <td><img src="/img/Menu.PNG" alt="Image 1" width="600"></td>
+        <td><img src="/img/2.PNG" alt="Image 2" width="600"></td>
+    </tr>
+    <tr>
+        <td><img src="/img/newplot(1).png" alt="Image 3" width="600"></td>
+        <td><img src="/img/newplot(2).png" alt="Image 4" width="600"></td>
+    </tr>
+</table>
+
 <h2>:diamond_shape_with_a_dot_inside:Guide de démarrage rapide</h2>
 
 Rendez vous sur le site :  <url>https://telephony-insights.streamlit.app/</url>
