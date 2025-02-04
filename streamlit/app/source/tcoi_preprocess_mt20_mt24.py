@@ -113,6 +113,7 @@ def preprocess_data(file1):
     df["DUREE"] = df["DUREE"].fillna("0")
     df['IMEI'] = df['IMEI'].fillna("INDETERMINE")
     df["IMEI"] = df["IMEI"].apply(clean_number)
+    df["IMSI"] = df["IMSI"].astype('str')
     df['IMSI'] = df['IMSI'].apply(clean_number)
     df['CIBLE'] = df['CIBLE'].apply(clean_number)
     df['CIBLE'] = df['CIBLE'].replace(r'^0692', '262692', regex=True)
