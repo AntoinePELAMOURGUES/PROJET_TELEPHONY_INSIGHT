@@ -43,6 +43,6 @@ if st.session_state.page == "mt24" or st.session_state.page == "mt20":
             feuille = st.selectbox("Feuilles disponibles", noms_feuilles)
             df = preprocess_data(uploaded_file_1, uploaded_file_2, sheet_name=feuille)
         else:
-            df = preprocess_data(uploaded_file_1, uploaded_file_2)
+            df = preprocess_data(uploaded_file_1, uploaded_file_2, sheet_name=0)
         st.markdown("---")
         visualisation_data(df, 'SRR')
