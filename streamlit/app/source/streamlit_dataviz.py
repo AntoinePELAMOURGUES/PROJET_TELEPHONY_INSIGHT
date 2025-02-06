@@ -62,13 +62,11 @@ def plot_correspondant_bar(df):
         # 8. Trier grouped_counts par 'TOTAL_COMS' de manière décroissante (important avant de créer le graphique)
         grouped_counts = grouped_counts.sort_values(by='TOTAL_COMS', ascending=False)
         fig = px.histogram(grouped_counts, x="CORRESPONDANT", y="NBRE COMS",
-             color="TYPE D'APPEL", barmode='group',
-             height=400)
+             color="TYPE D'APPEL", barmode='group')
         # Ajustement de la mise en page
-        fig.update_layout(
-            xaxis_tickangle=-45,  # Inclinaison des labels de l'axe X
-            bargap=0.2  # Espacement entre les barres
-        )
+        # fig.update_layout(
+        #     xaxis_tickangle=-45,  # Inclinaison des labels de l'axe X
+        #     )
         return fig
     except Exception as e:
         print(f"Erreur lors de la création du graphique à barres: {e}")
