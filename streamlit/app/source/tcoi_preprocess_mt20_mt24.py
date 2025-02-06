@@ -8,6 +8,7 @@ def preprocess_data(file1):
     df = pd.read_csv(file1, sep=';', encoding='latin1', dtype={"CIBLE": str, "CORRESPONDANT": str, "DUREE": str, "IMSI": str, "IMEI": str, "CODE POSTAL": str,  "X": str, "Y": str, "VILLE": str, "ADRESSE2": str, "ADRESSE3": str, "ADRESSE4": str, "ADRESSE5": str})
     # Appliquer la fonction pour convertir les dates
     if 'DATE' in df.columns:
+        df['DATE'] = df['DATE'].apply(convert_date)
         df = transform_date(df, 'DATE')
     if 'DIRECTION' in df.columns:
         df['DIRECTION'] = df['DIRECTION'].fillna("INDETERMINE")
