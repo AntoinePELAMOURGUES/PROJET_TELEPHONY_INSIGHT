@@ -44,6 +44,7 @@ def count_corr(df):
 
 def plot_correspondant_bar(df):
     try:
+        df['CORRESPONDANT'] = df['CORRESPONDANT'].astype(str)
         # 1. Compter le nombre total de communications par correspondant (sans tenir compte du type d'appel)
         city_count = df.groupby('CORRESPONDANT').size().reset_index(name='TOTAL_COMS')
         # 2. Filtrer pour garder uniquement les correspondants ayant 11 ou 12 caractères
@@ -60,7 +61,6 @@ def plot_correspondant_bar(df):
         grouped_counts['POURCENTAGE'] = ((grouped_counts['NBRE COMS'] / grouped_counts['TOTAL_COMS']) * 100).round(1)
         # 8. Trier grouped_counts par 'TOTAL_COMS' de manière décroissante (important avant de créer le graphique)
         grouped_counts = grouped_counts.sort_values(by='TOTAL_COMS', ascending=False)
-        grouped_counts['CORRESPONDANT'] = grouped_counts['CORRESPONDANT'].astype(str)
         fig = px.bar(grouped_counts, x='CORRESPONDANT', y='NBRE COMS',
                      color='TYPE D\'APPEL',  # Ajout de la couleur en fonction du type d'appel
                      title='Nombre de Communications par Correspondant (Top 10)',
