@@ -230,8 +230,8 @@ def comm_histo_hour(df):
 # Compter le nombre d'appels par adresse et calculer les pourcentages associés
 def adresse_count(df):
     try:
-       adresse_counts = df['Adresse'].value_counts().reset_index()
-       adresse_counts.columns = ['Adresse', 'Nombre de déclenchement']
+       adresse_counts = df['ADRESSE'].value_counts().reset_index()
+       adresse_counts.columns = ['ADRESSE', 'Nombre de déclenchement']
        adresse_counts.dropna(axis=0, inplace=True)  # Supprimer les lignes sans adresse
        total_contacts = adresse_counts['Nombre de déclenchement'].sum()
        adresse_counts['Pourcentage'] = ((adresse_counts['Nombre de déclenchement'] / total_contacts) * 100).round(1)
@@ -244,7 +244,7 @@ def adresse_count(df):
 # Créer un scatter plot basé sur les villes et les dates
 def scatter_plot_ville(df):
     try:
-       fig = px.scatter(df, x='Date', y='Ville', color='Ville', title='Localisation en fonction de la date')
+       fig = px.scatter(df, x='DATE', y='VILLE', color='VILLE', title='Localisation en fonction de la date')
        return fig
     except Exception as e:
        print(f"Erreur lors de la création du scatter plot des villes: {e}")
@@ -285,11 +285,11 @@ def geocode_address_datagouv(address):
 def carto_adresse_srr(df):
     try:
         adress_count = adresse_count(df)  # Compter les adresses
-        df_merged = adress_count.merge(df, how='left', left_on="Adresse", right_on='Adresse')
+        df_merged = adress_count.merge(df, how='left', left_on="ADRESSE", right_on='Adresse')
         # Appliquer la conversion des coordonnées sur chaque ligne
-        df_merged[['Latitude', 'Longitude']] = df_merged.apply(lambda row: gauss_laborde_to_wgs84(row['Coordonnée X'], row['Coordonnée Y']), axis=1, result_type='expand')
+        df_merged[['LATITUDE', 'LONGITUDE']] = df_merged.apply(lambda row: gauss_laborde_to_wgs84(row['COORDONNEE X'], row['COORDONNEE Y']), axis=1, result_type='expand')
         fig = px.scatter_map(df_merged,
-                            lat="Latitude", lon="Longitude",
+                            lat="LATITUDE", lon="LONGITUDE",
                             color="Pourcentage", size="Nombre de déclenchement",
                             hover_name="Adresse",
                             size_max=60, zoom=10,
@@ -305,9 +305,9 @@ def carto_adresse_srr(df):
 def carto_adresse_orre(df):
     try:
         fig = px.scatter_map(df,
-                            lat="Latitude", lon="Longitude",
+                            lat="LATITUDE", lon="LONGITUDE",
                             color="Pourcentage", size="Nombre de déclenchement",
-                            hover_name="Adresse",
+                            hover_name="ADRESSE",
                             size_max=60, zoom=10,
                             color_continuous_scale=px.colors.sequential.Bluered,
                             map_style="carto-positron")
@@ -321,11 +321,11 @@ def carto_adresse_tcoi(df):
     try:
         fig = px.scatter_map(
             df,
-            lat="Latitude",
-            lon="Longitude",
+            lat="LATITUDE",
+            lon="LONGITUDE",
             color="Pourcentage",
             size="Nombre de déclenchement",
-            hover_name="Adresse",
+            hover_name="ADRESSE",
             size_max=60,
             zoom=10,
             color_continuous_scale=px.colors.sequential.Bluered,
@@ -339,7 +339,7 @@ def carto_adresse_tcoi(df):
 @st.cache_data
 def convert_df(df):
     # IMPORTANT: Cache the conversion to prevent computation on every rerun
-    return df.to_csv(sep=';', index= False, encoding='utf-8')
+    return df.to_csv(sep=';', index= False, encoding='latin1')
 
 ############################################ VISUALISATION ######################################################
 
@@ -472,8 +472,8 @@ def visualisation_data(df, operateur: str):
             st.write("❌ Une erreur est survenue lors du téléchargement des données.")
 
         if shape > 1:
-            total_days = (df['Date'].max() - df['Date'].min()).days
-            fig = px.histogram(df, x="Date", color = "IMEI", nbins=total_days, title="Répartition IMEI sur la période")
+            total_days = (df['DATE'].max() - df['DATE'].min()).days
+            fig = px.histogram(df, x="DATE", color = "IMEI", nbins=total_days, title="Répartition IMEI sur la période")
             fig.update_layout(bargap=0.01)
             st.plotly_chart(fig)
     else:
@@ -498,8 +498,8 @@ def visualisation_data(df, operateur: str):
             st.write("❌ Une erreur est survenue lors du téléchargement des données.")
 
         if shape > 1:
-            total_days = (df['Date'].max() - df['Date'].min()).days
-            fig = px.histogram(df, x="Date", color = "IMSI", nbins=total_days, title="Répartition IMSI sur la période")
+            total_days = (df['DATE'].max() - df['DATE'].min()).days
+            fig = px.histogram(df, x="DATE", color = "IMSI", nbins=total_days, title="Répartition IMSI sur la période")
             fig.update_layout(bargap=0.01)
             st.plotly_chart(fig)
 
@@ -559,14 +559,14 @@ def visualisation_data(df, operateur: str):
     # Cartographie des relais déclenchés selon l'opérateur
 
     if operateur == "TCOI":
-        new_df = adresse_co.merge(df, on='Adresse', how='left')
+        new_df = adresse_co.merge(df, on='ADRESSE', how='left')
         # Convertir les colonnes en types appropriés si nécessaire
-        new_df['Latitude'] = pd.to_numeric(new_df['Latitude'], errors='coerce')
-        new_df['Longitude'] = pd.to_numeric(new_df['Longitude'], errors='coerce')
+        new_df['LATITUDE'] = pd.to_numeric(new_df['LATITUDE'], errors='coerce')
+        new_df['LONGITUDE'] = pd.to_numeric(new_df['LONGITUDE'], errors='coerce')
         new_df['Pourcentage'] = pd.to_numeric(new_df['Pourcentage'], errors='coerce')
         new_df['Nombre de déclenchement'] = pd.to_numeric(new_df['Nombre de déclenchement'], errors='coerce')
         # Supprimer les lignes avec des valeurs manquantes dans les colonnes critiques
-        new_df.dropna(subset=['Latitude', 'Longitude', 'Pourcentage', 'Nombre de déclenchement'], inplace=True)
+        new_df.dropna(subset=['LATITUDE', 'LONGITUDE', 'Pourcentage', 'Nombre de déclenchement'], inplace=True)
         carto = carto_adresse_tcoi(new_df)
         if carto is not None:
             st.plotly_chart(carto)
