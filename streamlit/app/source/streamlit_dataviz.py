@@ -584,9 +584,9 @@ def visualisation_data(df, operateur: str):
         new_df['LATITUDE'] = pd.to_numeric(new_df['LATITUDE'], errors='coerce')
         new_df['LONGITUDE'] = pd.to_numeric(new_df['LONGITUDE'], errors='coerce')
         new_df['Pourcentage'] = pd.to_numeric(new_df['Pourcentage'], errors='coerce')
-        new_df['Nombre de déclenchement'] = pd.to_numeric(new_df['Nombre de déclenchement'], errors='coerce')
+        new_df['NBRE DECLENCHEMENTS'] = pd.to_numeric(new_df['NBRE DECLENCHEMENTS'], errors='coerce')
         # Supprimer les lignes avec des valeurs manquantes dans les colonnes critiques
-        new_df.dropna(subset=['LATITUDE', 'LONGITUDE', 'Pourcentage', 'Nombre de déclenchement'], inplace=True)
+        new_df.dropna(subset=['LATITUDE', 'LONGITUDE', 'Pourcentage', 'NBRE DECLENCHEMENTS'], inplace=True)
         carto = carto_adresse_tcoi(new_df)
         if carto is not None:
             st.plotly_chart(carto)
