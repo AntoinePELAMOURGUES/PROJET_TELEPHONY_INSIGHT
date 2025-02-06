@@ -324,7 +324,7 @@ def carto_adresse_tcoi(df):
             lat="LATITUDE",
             lon="LONGITUDE",
             color="Pourcentage",
-            size="Nombre de déclenchement",
+            size="NBRE DECLENCHEMENTS",
             hover_name="ADRESSE",
             size_max=60,
             zoom=10,
