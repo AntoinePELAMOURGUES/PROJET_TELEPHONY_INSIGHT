@@ -526,15 +526,17 @@ def visualisation_data(df, operateur: str):
     if not df.empty:  # Vérifier que le DataFrame n'est pas vide avant d'afficher les histogrammes
         comm_histo_glo = comm_histo_global(df)
         st.plotly_chart(comm_histo_glo)
-        if df.Mois.nunique() > 1:
+        if df.MOIS.nunique() > 1:
             comm_histo_month = comm_histo_monthly(df)
             st.plotly_chart(comm_histo_month)
 
-        comm_histo_week = comm_histo_weekday(df)
-        st.plotly_chart(comm_histo_week)
+        if df['JOUR DE LA SEMAINE'].nunique() > 1:
+            comm_histo_week = comm_histo_weekday(df)
+            st.plotly_chart(comm_histo_week)
 
-        comm_histo_h = comm_histo_hour(df)
-        st.plotly_chart(comm_histo_h)
+        if df["HEURE"].nunique() > 1:
+            comm_histo_h = comm_histo_hour(df)
+            st.plotly_chart(comm_histo_h)
 
     # Nombre de communications par adresse du relais
     if 'ADRESSE' in df.columns:
