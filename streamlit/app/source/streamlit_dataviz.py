@@ -231,11 +231,11 @@ def comm_histo_hour(df):
 def adresse_count(df):
     try:
        adresse_counts = df['ADRESSE'].value_counts().reset_index()
-       adresse_counts.columns = ['ADRESSE', 'Nombre de déclenchement']
+       adresse_counts.columns = ['ADRESSE', 'NBRE DECLENCHEMENTS']
        adresse_counts.dropna(axis=0, inplace=True)  # Supprimer les lignes sans adresse
-       total_contacts = adresse_counts['Nombre de déclenchement'].sum()
-       adresse_counts['Pourcentage'] = ((adresse_counts['Nombre de déclenchement'] / total_contacts) * 100).round(1)
-       adresse_counts.sort_values(by='Nombre de déclenchement', ascending=False, inplace=True)
+       total_contacts = adresse_counts['NBRE DECLENCHEMENTS'].sum()
+       adresse_counts['Pourcentage'] = ((adresse_counts['NBRE DECLENCHEMENTS'] / total_contacts) * 100).round(1)
+       adresse_counts.sort_values(by='NBRE DECLENCHEMENTS', ascending=False, inplace=True)
        return adresse_counts
     except Exception as e:
        print(f"Erreur lors du comptage des adresses: {e}")
@@ -567,7 +567,8 @@ def visualisation_data(df, operateur: str):
     # Graphique top 10 déclemenchemnts par ville
     city_plot = plot_city_bar(df)
     st.plotly_chart(city_plot)
-    st.markdowns('---')
+
+    st.markdown('---')
 
     # Graphique scatter par ville
     if 'VILLE' in df.columns:
