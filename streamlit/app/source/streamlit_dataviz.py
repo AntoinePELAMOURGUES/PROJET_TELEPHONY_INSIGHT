@@ -26,25 +26,94 @@ def gauss_laborde_to_wgs84(x, y):
 def count_corr(df):
     try:
         # Compter le nombre de contacts par correspondant
-        correspondant_counts = df['Correspondant'].value_counts().reset_index()
-        correspondant_counts.columns = ['Correspondant', 'Nombre de communication']
+        correspondant_counts = df['CORRESPONDANT'].value_counts().reset_index()
+        correspondant_counts.columns = ['CORRESPONDANT', 'NBRE COMS']
         # Filtrer pour garder uniquement les correspondants ayant 11 ou 12 caractères
-        correspondant_counts = correspondant_counts[correspondant_counts['Correspondant'].str.len().isin([11, 12])]
-        total_contacts = correspondant_counts['Nombre de communication'].sum()
+        correspondant_counts = correspondant_counts[correspondant_counts['CORRESPONDANT'].str.len().isin([11, 12])]
+        total_contacts = correspondant_counts['NBRE COMS'].sum()
         # Calculer le pourcentage et arrondir à un chiffre après la virgule
-        correspondant_counts['Pourcentage'] = ((correspondant_counts['Nombre de communication'] / total_contacts) * 100).round(1)
+        correspondant_counts['POURCENTAGE'] = ((correspondant_counts['NBRE COMS'] / total_contacts) * 100).round(1)
         # Trier par nombre de contacts du plus élevé au plus bas
-        correspondant_counts = correspondant_counts.sort_values(by='Nombre de communication', ascending=False)
+        correspondant_counts = correspondant_counts.sort_values(by='NBRE COMS', ascending=False)
         return correspondant_counts
     except Exception as e:
         print(f"Erreur lors du comptage des correspondants: {e}")
         return pd.DataFrame()  # Retourner un DataFrame vide en cas d'erreur
 
+
+
+def plot_correspondant_bar(df):
+    try:
+        # 1. Compter le nombre total de communications par correspondant (sans tenir compte du type d'appel)
+        city_count = df.groupby('CORRESPONDANT').size().reset_index(name='TOTAL_COMS')
+        # 2. Filtrer pour garder uniquement les correspondants ayant 11 ou 12 caractères
+        city_count = city_count[city_count['CORRESPONDANT'].str.len().isin([11, 12])]
+        # 3. Trier par nombre total de communications et prendre les 10 premiers
+        top_10_correspondants = city_count.sort_values(by='TOTAL_COMS', ascending=False).head(10)['CORRESPONDANT'].tolist()
+        # 4. Filtrer le DataFrame original pour ne garder que les 10 premiers correspondants
+        df_top_10 = df[df['CORRESPONDANT'].isin(top_10_correspondants)].copy()
+        # 5. Grouper par correspondant ET type d'appel (maintenant qu'on a filtré les 10 premiers)
+        grouped_counts = df_top_10.groupby(['CORRESPONDANT', 'TYPE D\'APPEL']).size().reset_index(name='NBRE COMS')
+        # 6. Ajouter la colonne 'TOTAL_COMS' à grouped_counts
+        grouped_counts = pd.merge(grouped_counts, city_count, on='CORRESPONDANT', how='left')
+        # 7. Calculer le pourcentage du nombre de communications par rapport au nombre total de communications *pour chaque correspondant*
+        grouped_counts['POURCENTAGE'] = ((grouped_counts['NBRE COMS'] / grouped_counts['TOTAL_COMS']) * 100).round(1)
+        # 8. Trier grouped_counts par 'TOTAL_COMS' de manière décroissante (important avant de créer le graphique)
+        grouped_counts = grouped_counts.sort_values(by='TOTAL_COMS', ascending=False)
+        fig = px.bar(grouped_counts, x='CORRESPONDANT', y='NBRE COMS',
+                     color='TYPE D\'APPEL',  # Ajout de la couleur en fonction du type d'appel
+                     title='Nombre de Communications par Correspondant (Top 10)',
+                     hover_data=['POURCENTAGE', 'TYPE D\'APPEL', 'TOTAL_COMS'],  # Inclure TOTAL_COMS dans les informations au survol
+                     labels={'CORRESPONDANT': 'Correspondant', 'NBRE COMS': 'Nombre de Communications', 'TYPE D\'APPEL': 'Type d\'Appel', 'TOTAL_COMS': 'Total Communications'})
+        # Mise en forme des barres
+        fig.update_traces(
+            marker_line_width=1,  # Ajout d'un contour noir
+            marker_line_color="black",
+            width=0.4,  # Réduction de la largeur des barres
+            insidetextanchor="middle"
+        )
+        # Ajustement de la mise en page
+        fig.update_layout(
+            xaxis_tickangle=-45,  # Inclinaison des labels de l'axe X
+            bargap=0.2  # Espacement entre les barres
+        )
+        return fig
+    except Exception as e:
+        print(f"Erreur lors de la création du graphique à barres: {e}")
+        return None
+
+def plot_city_bar(df):
+    try:
+        # Compter le nombre de contacts par correspondant
+        city_counts = df['VILLE'].value_counts().reset_index()
+        city_counts.columns = ['VILLE', 'NBRE DEC']
+        city_counts = city_counts[city_counts['VILLE'] != 'INDETERMINE']
+        fig = px.bar(city_counts.head(10), x='VILLE', y='NBRE DEC',
+                     title='Nombre de déclenchement par ville (Top 10)',
+                     hover_data=['NBRE DEC'],  # Inclure TOTAL_COMS dans les informations au survol
+                     labels={'VILLE': 'Ville', 'NBRE DEC': 'Nombre de Déclenchements'})
+        # Mise en forme des barres
+        fig.update_traces(
+            marker_line_width=1,  # Ajout d'un contour noir
+            marker_line_color="black",
+            width=0.4,  # Réduction de la largeur des barres
+            insidetextanchor="middle"
+        )
+        # Ajustement de la mise en page
+        fig.update_layout(
+            xaxis_tickangle=-45,  # Inclinaison des labels de l'axe X
+            bargap=0.2  # Espacement entre les barres
+        )
+        return fig
+    except Exception as e:
+        print(f"Erreur lors de la création du graphique à barres: {e}")
+        return None
+
 # Compter le nombre de communications par IMEI
 def count_IMEI(df):
     try:
         imei_counts = df['IMEI'].value_counts().reset_index()
-        imei_counts.columns = ['IMEI', 'Nombre de communication']
+        imei_counts.columns = ['IMEI', 'NBRE COMS']
         return imei_counts, imei_counts.shape[0]
     except Exception as e:
         print(f"Erreur lors du comptage des IMEI: {e}")
@@ -54,7 +123,7 @@ def count_IMEI(df):
 def count_IMSI(df):
     try:
         imsi_counts = df['IMSI'].value_counts().reset_index()
-        imsi_counts.columns = ['IMSI', 'Nombre de communication']
+        imsi_counts.columns = ['IMSI', 'NBRE COMS']
         return imsi_counts, imsi_counts.shape[0]
     except Exception as e:
         print(f"Erreur lors du comptage des IMSI: {e}")
@@ -63,13 +132,21 @@ def count_IMSI(df):
 # Compter le nombre de types d'appel et créer un graphique en secteurs
 def count_phone_type(df):
     try:
-        type_appel_counts = df["Type d'appel"].value_counts().reset_index()
-        type_appel_counts.columns = ['Type d\'appel', 'Nombre']
+        type_appel_counts = df["TYPE D'APPEL"].value_counts().reset_index()
+        type_appel_counts.columns = ['TYPE D\'APPEL', 'NBRE']
+        total_coms = type_appel_counts['NBRE'].sum()  # Calculer le nombre total de communications
         colors = ['gold', 'mediumturquoise', 'darkorange', 'lightgreen']  # Définir les couleurs pour le graphique
-        fig = go.Figure(data=[go.Pie(labels=type_appel_counts['Type d\'appel'],
-                                       values=type_appel_counts['Nombre'])])
+
+        fig = go.Figure(data=[go.Pie(labels=type_appel_counts['TYPE D\'APPEL'],
+                                       values=type_appel_counts['NBRE'],
+                                       hole=.7)])  # Ajouter l'argument hole pour créer un donut
+
         fig.update_traces(hoverinfo='label+percent', textinfo='value', textfont_size=20,
                           marker=dict(colors=colors, line=dict(color='#000000', width=2)))
+
+        # Ajouter une annotation au centre du donut pour afficher le nombre total de communications
+        fig.update_layout(annotations=[dict(text=f'Total<br>{total_coms}', x=0.5, y=0.5, font_size=30, showarrow=False)])
+
         return fig  # Retourner la figure Plotly
     except Exception as e:
         print(f"Erreur lors du comptage des types d'appel: {e}")
@@ -78,7 +155,7 @@ def count_phone_type(df):
 # Créer un histogramme global du nombre de communications par jour
 def comm_histo_global(df):
     try:
-        df['DateOnly'] = df['Date'].dt.date  # Extraire uniquement la date
+        df['DateOnly'] = df['DATE'].dt.date  # Extraire uniquement la date
         daily_counts = df.groupby('DateOnly').size().reset_index(name='Nombre de communications')
         daily_counts['DateOnly'] = pd.to_datetime(daily_counts['DateOnly'])  # Convertir en datetime
         fig = go.Figure()
@@ -103,7 +180,7 @@ def comm_histo_global(df):
 def comm_histo_monthly(df):
     try:
         fig_monthly = go.Figure()
-        fig_monthly.add_trace(go.Histogram(x=df['Mois'].dropna().astype(str),
+        fig_monthly.add_trace(go.Histogram(x=df['MOIS'].dropna().astype(str),
                                             histfunc='count',
                                             name='Communications par mois',
                                             marker=dict(line=dict(color='black', width=1))))
@@ -122,7 +199,7 @@ def comm_histo_weekday(df):
         jours_semaine = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
 
         # Compter le nombre de communications par jour
-        counts = df['Jour de la semaine'].value_counts().reindex(jours_semaine, fill_value=0)
+        counts = df['JOUR DE LA SEMAINE'].value_counts().reindex(jours_semaine, fill_value=0)
 
         # Créer l'histogramme
         fig_weekday = go.Figure()
@@ -145,10 +222,9 @@ def comm_histo_weekday(df):
 # Créer un histogramme du nombre de communications par heure
 def comm_histo_hour(df):
     try:
-        df['Date'] = pd.to_datetime(df['Date'])  # Convertir en datetime
-        df['Hour'] = df['Date'].dt.hour  # Extraire l'heure
-        fig = px.histogram(df, x='Hour', title='Nombre de communications par heure de la journée',
-                           labels={'Hour': 'Heure', 'count': 'Nombre de communications'},
+
+        fig = px.histogram(df, x='HEURE', title='Nombre de communications par heure de la journée',
+                           labels={'HEURE': 'Heure', 'count': 'Nombre de communications'},
                            histnorm='')
         # Ajouter des bordures aux barres
         fig.update_traces(marker=dict(line=dict(color='black', width=1)))
@@ -271,52 +347,61 @@ def convert_df(df):
     # IMPORTANT: Cache the conversion to prevent computation on every rerun
     return df.to_csv(sep=';', index= False, encoding='utf-8')
 
+############################################ VISUALISATION ######################################################
 
 def visualisation_data(df, operateur: str):
-    if 'Date' in df.columns:
-        # Afficher la période complète de la FADET
-        st.write("ℹ️ La période complète de la FADET s'étend du {} au {}".format(df["Date"].min(), df["Date"].max()))
+    # Gestion de la période temporelle
+    if 'DATE' in df.columns:
+        st.write("ℹ️ La période complète de la FADET s'étend du {} au {}".format(df["DATE"].min(), df["DATE"].max()))
         st.markdown("---")
 
-        # Interface pour sélectionner la période d'analyse
         st.write("📅 Vous pouvez modifier la période d'analyse ci-dessous :")
-        start_date = st.date_input("Date de début", min_value=df["Date"].min(), max_value=df["Date"].max(), value=df["Date"].min())
-        end_date = st.date_input("Date de fin", min_value=df["Date"].min(), max_value=df["Date"].max(), value=df["Date"].max())
+        start_date = st.date_input("Date de début", min_value=df["DATE"].min(), max_value=df["DATE"].max(), value=df["DATE"].min())
+        end_date = st.date_input("Date de fin", min_value=df["DATE"].min(), max_value=df["DATE"].max(), value=df["DATE"].max())
 
-        # Conversion des dates en datetime
         start_date = pd.to_datetime(start_date)
         end_date = pd.to_datetime(end_date)
 
-        # Filtrer le DataFrame en fonction des dates sélectionnées
-        df = df[(df["Date"] >= start_date) & (df["Date"] <= end_date)]
+        df = df[(df["DATE"] >= start_date) & (df["DATE"] <= end_date)]
         st.markdown("---")
     else:
         st.write("❌ Aucune date n'a été trouvée dans le fichier chargé.")
         return
 
-    if "Adresse" in df.columns and 'Ville' in df.columns:
-        expected_columns = ['Date', 'Abonné', 'Correspondant', "Type d'appel", 'Durée', 'Adresse', 'Ville', 'IMEI', 'IMSI']
-        expected_columns_filter = ["Type d'appel", "Correspondant", "IMEI", "IMSI", "Ville", "Adresse"]
-    else :
-        st.write("❌ Votre fichier ne contient aucune donnée concernant les adresses ou les villes.")
-        expected_columns = ['Date', 'Abonné', 'Correspondant', "Type d'appel", 'Durée', 'IMEI', 'IMSI']
-        expected_columns_filter = ["Type d'appel", "Correspondant", "IMEI", "IMSI"]
-    # Interface pour appliquer un filtre supplémentaire
-    st.write("Choisissez un filtre si besoin :")
-    filter_option = st.selectbox("Filtrer par :", ["Sélectionner"] + expected_columns_filter)
-    st.markdown("---")
-    # Vérifier si un filtre a été sélectionné
-    if filter_option != "Sélectionner":
-        value_filter = st.selectbox(f"Valeur pour {filter_option} :", ['Sélectionner'] + list(df[filter_option].dropna().unique()))
-        if value_filter != 'Sélectionner':
-            st.markdown("---")
-            # Appliquer le filtre en fonction de la sélection
-            df = df[df[filter_option].astype(str) == value_filter]
-            st.write(f"Voici un aperçu des données ayant pour filtre {filter_option} : {value_filter}")
+    # Définition des colonnes à afficher et des options de filtre
+    if "ADRESSE" in df.columns and 'VILLE' in df.columns:
+        if operateur == "TCOI":
+            expected_columns = ['DATE', 'ABONNE', 'CORRESPONDANT', "TYPE D'APPEL", 'DIRECTION', 'DUREE', 'ADRESSE', 'VILLE', 'IMEI', 'IMSI']
+        else:
+            expected_columns = ['DATE', 'ABONNE', 'CORRESPONDANT', "TYPE D'APPEL", 'DUREE', 'ADRESSE', 'VILLE', 'IMEI', 'IMSI']
+        expected_columns_filter = ["TYPE D'APPEL", "CORRESPONDANT", "IMEI", "IMSI", "VILLE", "ADRESSE", "HEURE", "JOUR DE LA SEMAINE"]
     else:
-        st.write("Voici un aperçu des données complètes sur la période choisie:")
+        st.write("❌ Votre fichier ne contient aucune donnée concernant les adresses ou les villes.")
+        expected_columns = ['DATE', 'ABONNE', 'CORRESPONDANT', "TYPE D'APPEL", 'DUREE', 'IMEI', 'IMSI']
+        expected_columns_filter = ["TYPE D'APPEL", "CORRESPONDANT", "IMEI", "IMSI", "HEURE", "JOUR DE LA SEMAINE"]
 
-    # Affichage des données filtrées
+    # Interface pour les sélections multiples
+    st.write("Choisissez un ou plusieurs filtres :")
+    selected_filters = {}
+    for col in [x for x in expected_columns_filter if x != "HEURE"]:  # Exclure l'heure pour le moment
+        selected_filters[col] = st.multiselect(f"Valeurs pour {col} :", options=df[col].dropna().unique())
+    st.markdown("---")
+
+    # Ajout du filtre de créneau horaire
+    st.write("Sélectionnez un créneau horaire :")
+    heure_debut, heure_fin = st.slider("Heure de début et de fin :", 0, 23, (0, 23))
+    st.markdown("---")
+
+    # Application des filtres sélectionnés
+    for col, values in selected_filters.items():
+        if values:
+            df = df[df[col].isin(values)]
+
+    # Application du filtre de créneau horaire
+    df['HEURE'] = df['HEURE'].astype(int)  # Assure que la colonne 'HEURE' est de type entier
+    df = df[(df['HEURE'] >= heure_debut) & (df['HEURE'] <= heure_fin)]
+
+    st.write("Voici un aperçu des données filtrées :")
     filtered_df = df[expected_columns]
     st.write(filtered_df)
 
@@ -358,6 +443,11 @@ def visualisation_data(df, operateur: str):
 
     st.markdown("---")
 
+    top_10_histo = plot_correspondant_bar(df)
+    st.plotly_chart(top_10_histo)
+
+    st.markdown("---")
+
     # Afficher le type de communications
     if "Type d'appel" in df.columns:
         st.write("Type de communications :")
@@ -389,7 +479,7 @@ def visualisation_data(df, operateur: str):
 
         if shape > 1:
             total_days = (df['Date'].max() - df['Date'].min()).days
-            fig = px.histogram(df, x="Date", color = "IMEI", nbins=total_days, title="Répartition IMSI sur la période")
+            fig = px.histogram(df, x="Date", color = "IMEI", nbins=total_days, title="Répartition IMEI sur la période")
             fig.update_layout(bargap=0.01)
             st.plotly_chart(fig)
     else:
@@ -462,6 +552,9 @@ def visualisation_data(df, operateur: str):
         st.write("❌ La colonne 'Adresse' n'est pas disponible.")
 
     st.markdown("---")
+
+    # Graphique top 10 déclemenchemnts par ville
+    city_plot = plot_city_bar(df)
 
     # Graphique scatter par ville
     if 'Ville' in df.columns:

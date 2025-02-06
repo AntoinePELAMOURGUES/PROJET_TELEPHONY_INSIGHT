@@ -1,11 +1,11 @@
 import pandas as pd
 import numpy as np
+from preprocess_functions import *
 
-
-def preprocess_data(file1, file2, sheet_name=None):
+def preprocess_data(file1, file2, sheet_name=0):
     expected_columns_file1 = ["Type d'appel", "Abonné", "Correspondant", "Date", "Durée", "CIREF", "IMEI", "IMSI"]
     expected_columns_file2 = ["CIREF", "Adresse", "Comp. adresse", "Code postal", "Bureau Distributeur", "Coordonnée X", "Coordonnée Y"]
-    df1 = pd.read_excel(file1, sheet_name=sheet_name, dtype={"Abonné": str, "Correspondant": str, "IMEI": str, "IMSI": str, "CIREF": str, "Durée": str})
+    df1 = pd.read_excel(file1, sheet_name=sheet_name, dtype={"Abonné": str, "Correspondant": str, "IMEI": str, "IMSI": str, "CIREF": str, "Durée": str, "Type d'appel" : str})
     df2 = pd.read_excel(file2, dtype= {"CIREF": str, "Adresse" : str, "Comp. adresse" : str, "Code postal" : str, "Bureau Distributeur" : str, "Coordonnée X": str, "Coordonnée Y": str})
     available_columns_1 = df1.columns.tolist()
     # Filtrer les colonnes attendues qui sont disponibles
@@ -28,66 +28,29 @@ def preprocess_data(file1, file2, sheet_name=None):
         if i in deleted_columns:
             df.drop(i, axis=1, inplace=True)
     if 'Date' in df.columns:
-        df['Date'] = pd.to_datetime(df['Date'])
-        # Extraire l'année, le mois et le jour de la semaine
-        df['Années'] = df['Date'].dt.year
-        df['Mois'] = df['Date'].dt.month
-        df['Jour de la semaine'] = df['Date'].dt.day_name()
-        # Mapper les jours de la semaine en français
-        jours_semaine_fr = {
-            'Monday': 'Lundi',
-            'Tuesday': 'Mardi',
-            'Wednesday': 'Mercredi',
-            'Thursday': 'Jeudi',
-            'Friday': 'Vendredi',
-            'Saturday': 'Samedi',
-            'Sunday': 'Dimanche'
-        }
-        # Mapper les mois en français
-        mois_fr = {
-            1: 'Janvier',
-            2: 'Février',
-            3: 'Mars',
-            4: 'Avril',
-            5: 'Mai',
-            6: 'Juin',
-            7: 'Juillet',
-            8: 'Août',
-            9: 'Septembre',
-            10: 'Octobre',
-            11: 'Novembre',
-            12: 'Décembre'
-        }
-        # Remplacer les numéros de mois par leur équivalent en français
-        df['Mois'] = df['Mois'].map(mois_fr)
-        # Remplacer les noms des jours par leur équivalent en français
-        df['Jour de la semaine'] = df['Jour de la semaine'].map(jours_semaine_fr)
+        df = transform_date(df)
     if 'Abonné' in df.columns:
-        df['Abonné'] = df['Abonné'].replace(r'^0693', '262693', regex=True)
-        df['Abonné'] = df['Abonné'].replace(r'^0692', '262692', regex=True)
-        df['Abonné'] = df['Abonné'].replace(r'^06', '336', regex=True)
+        df = clean_cell_number(df, 'Abonné')
     if 'Correspondant' in df.columns:
-        df['Correspondant'] = df['Correspondant'].fillna('Data')
-        df['Correspondant'] = df['Correspondant'].str.split(',').str[0]
-        df['Correspondant'] = df['Correspondant'].replace(r'^0693', '262693', regex=True)
-        df['Correspondant'] = df['Correspondant'].replace(r'^0692', '262692', regex=True)
-        df['Correspondant'] = df['Correspondant'].replace(r'^06', '336', regex=True)
-        df['Correspondant'] = df['Correspondant'].replace(r'^07', '337', regex=True)
-        df['Correspondant'] = df['Correspondant'].replace(r'^02', '2622', regex=True)
+        df = clean_cell_number(df, 'Correspondant')
+    if "Type d'appel" in df.columns:
+        df["Type d'appel"] = df["Type d'appel"].astype(str)
+        df["Type d'appel"] = df["Type d'appel"].str.upper()
+        df["Type d'appel"] = df["Type d'appel"].apply(reset_accent)
     if 'Bureau Distributeur' in df.columns:
-        df = df.rename(columns={'Bureau Distributeur': 'Ville'})
-        df['Ville']= df['Ville'].str.upper()
-        df['Ville']= df['Ville'].str.replace("-", " ")
-        df['Ville']= df['Ville'].str.replace("SAINT", "ST")
-        df['Ville']= df['Ville'].str.replace("SAINTE", "STE")
-        df['Ville']= df['Ville'].str.replace("L'", "")
-        df['Ville'] = df['Ville'].str.replace("É", "E", regex=False)
-    if 'Adresse' in df.columns and 'Comp. adresse' in df.columns and 'Code postal' in df.columns:
-        df['adresse_complete'] = df['Adresse'] + " " + df['Code postal'] + " " + df['Ville']
+        df = clean_city(df, columns='Bureau Distributeur')
+    if 'Adresse' in df.columns and 'Code postal' in df.columns:
+        df['adresse_complete'] = df['Adresse'] + " " + df['Code postal'] + " " + df['VILLE']
+        df['adresse_complete'] = df['adresse_complete'].astype(str)
         df['adresse_complete']= df['adresse_complete'].str.upper()
         df['adresse_complete']= df['adresse_complete'].str.replace(r'\s+', ' ', regex=True)
-        df.fillna({'adresse_complete': 'INDETERMINE'}, inplace=True)
+        df['adresse_complete'] = df['adresse_complete'].apply(reset_accent)
         df = df.drop(columns=['Adresse', 'Comp. adresse', 'Code postal'])
         df= df.rename(columns={'adresse_complete': 'Adresse'})
+    df.fillna("INDETERMINE", inplace=True)
+    definitive_columns = ["Type d'appel", "Abonné", "Correspondant", "Date", "Durée", "CIREF", "IMEI", "IMSI", "Adresse", "Ville", 'Années', 'Mois', 'Heure', 'Jour de la semaine', "Coordonnée X", "Coordonnée Y"]
+    no_accent_columns = [reset_accent(i) for i in definitive_columns]
+    final_columns = [i.upper() for i in no_accent_columns]
+    for old_columns, new_columns in zip(definitive_columns, final_columns):
+        df = df.rename(columns={old_columns : new_columns})
     return df
-
