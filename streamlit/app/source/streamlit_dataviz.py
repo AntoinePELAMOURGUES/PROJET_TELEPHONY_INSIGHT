@@ -375,10 +375,25 @@ def visualisation_data(df, operateur: str):
         expected_columns_filter = ["TYPE D'APPEL", "CORRESPONDANT", "IMEI", "IMSI", "HEURE", "JOUR DE LA SEMAINE"]
 
     # Interface pour les sélections multiples
+    # Interface pour les sélections multiples en deux colonnes
     st.write("Choisissez un ou plusieurs filtres :")
+    col1, col2 = st.columns(2)  # Crée deux colonnes
+
     selected_filters = {}
-    for col in [x for x in expected_columns_filter if x != "HEURE"]:  # Exclure l'heure pour le moment
-        selected_filters[col] = st.multiselect(f"Valeurs pour {col} :", options=df[col].dropna().unique())
+    filter_columns = [x for x in expected_columns_filter if x != "HEURE"]
+    num_cols = len(filter_columns)
+    midpoint = num_cols // 2  # Trouve le point médian pour diviser les filtres
+
+    # Première colonne
+    with col1:
+        for col in filter_columns[:midpoint]:
+            selected_filters[col] = st.multiselect(f"Valeurs pour {col} :", options=df[col].dropna().unique(), key=f"filter_{col}")  # Ajout d'une clé unique
+
+    # Deuxième colonne
+    with col2:
+        for col in filter_columns[midpoint:]:
+            selected_filters[col] = st.multiselect(f"Valeurs pour {col} :", options=df[col].dropna().unique(), key=f"filter_{col}")  # Ajout d'une clé unique
+
     st.markdown("---")
 
     # Ajout du filtre de créneau horaire
