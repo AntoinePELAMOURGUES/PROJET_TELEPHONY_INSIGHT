@@ -566,6 +566,8 @@ def visualisation_data(df, operateur: str):
 
     # Graphique top 10 déclemenchemnts par ville
     city_plot = plot_city_bar(df)
+    st.plot_chart(city_plot)
+    st.markdowns('---')
 
     # Graphique scatter par ville
     if 'VILLE' in df.columns:
