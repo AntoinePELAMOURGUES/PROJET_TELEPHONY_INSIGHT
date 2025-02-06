@@ -421,7 +421,7 @@ def visualisation_data(df, operateur: str):
     st.markdown("---")
 
     # Afficher le nombre de communications par correspondant (exclusion des n° spéciaux)
-    if 'Correspondant' in df.columns:
+    if 'CORRESPONDANT' in df.columns:
         st.write("Nombre de communications par correspondant (exclusion des n° spéciaux):")
         corr = count_corr(df)
         st.write(corr)
@@ -449,7 +449,7 @@ def visualisation_data(df, operateur: str):
     st.markdown("---")
 
     # Afficher le type de communications
-    if "Type d'appel" in df.columns:
+    if "TYPE D'APPEL" in df.columns:
         st.write("Type de communications :")
         type_fig = count_phone_type(df)
         st.plotly_chart(type_fig)
@@ -528,7 +528,7 @@ def visualisation_data(df, operateur: str):
         st.plotly_chart(comm_histo_h)
 
     # Nombre de communications par adresse du relais
-    if 'Adresse' in df.columns:
+    if 'ADRESSE' in df.columns:
         st.markdown("---")
         st.write("Nombre de communications par adresse du relais :")
 
@@ -557,7 +557,7 @@ def visualisation_data(df, operateur: str):
     city_plot = plot_city_bar(df)
 
     # Graphique scatter par ville
-    if 'Ville' in df.columns:
+    if 'VILLE' in df.columns:
         scatter = scatter_plot_ville(df)
         st.plotly_chart(scatter)
 
@@ -578,9 +578,9 @@ def visualisation_data(df, operateur: str):
             st.plotly_chart(carto)
 
     else :
-        if 'Adresse' in df.columns:
-            adresse_co['Coordinates'] = adresse_co['Adresse'].apply(geocode_address_datagouv)
-            adresse_co[['Latitude', 'Longitude']] = pd.DataFrame(adresse_co['Coordinates'].tolist(), index=adresse_co.index)
+        if 'ADRESSE' in df.columns:
+            adresse_co['Coordinates'] = adresse_co['ADRESSE'].apply(geocode_address_datagouv)
+            adresse_co[['LATITUDE', 'LONGITUDE']] = pd.DataFrame(adresse_co['Coordinates'].tolist(), index=adresse_co.index)
             carto = carto_adresse_orre(adresse_co)
             if carto is not None:
                 st.plotly_chart(carto)
