@@ -190,7 +190,7 @@ def comm_histo_monthly(df):
 def comm_histo_weekday(df):
     try:
         # Définir l'ordre des jours de la semaine
-        jours_semaine = ['LUNDI', 'MARDI', 'MERCREDI', 'JEURDI', 'VENDREDI', 'SAMEDI', 'DIMANCHE']
+        jours_semaine = ['LUNDI', 'MARDI', 'MERCREDI', 'JEUDI', 'VENDREDI', 'SAMEDI', 'DIMANCHE']
 
         # Compter le nombre de communications par jour
         counts = df['JOUR DE LA SEMAINE'].value_counts().reindex(jours_semaine, fill_value=0)
