@@ -299,7 +299,7 @@ def carto_adresse_orre(df):
     try:
         fig = px.scatter_map(df,
                             lat="LATITUDE", lon="LONGITUDE",
-                            color="POURCENTAGE", size="Nombre de déclenchement",
+                            color="POURCENTAGE", size="DECLENCHEMENTS",
                             hover_name="ADRESSE",
                             size_max=60, zoom=10,
                             color_continuous_scale=px.colors.sequential.Bluered,
@@ -317,7 +317,7 @@ def carto_adresse_tcoi(df):
             lat="LATITUDE",
             lon="LONGITUDE",
             color="POURCENTAGE",
-            size="NBRE DECLENCHEMENTS",
+            size="DECLENCHEMENTS",
             hover_name="ADRESSE",
             size_max=60,
             zoom=10,
