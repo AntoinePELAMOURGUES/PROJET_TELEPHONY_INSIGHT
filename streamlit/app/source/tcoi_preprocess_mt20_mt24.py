@@ -10,11 +10,6 @@ def preprocess_data(file1):
     if 'DATE' in df.columns:
         df['DATE'] = df['DATE'].apply(convert_date)
         df = transform_date(df, 'DATE')
-    if 'DIRECTION' in df.columns:
-        df['DIRECTION'] = df['DIRECTION'].fillna("INDETERMINE")
-        df['DIRECTION'] = df['DIRECTION'].astype(str)
-        df['DIRECTION'] = df['DIRECTION'].str.upper()
-        df["DIRECTION"] = df["DIRECTION"].apply(reset_accent)
     if 'CORRESPONDANT' in df.columns:
         df['CORRESPONDANT'] = df['CORRESPONDANT'].fillna("DATA")
         df['CORRESPONDANT'] = df['CORRESPONDANT'].astype(str)
@@ -22,12 +17,13 @@ def preprocess_data(file1):
         df = clean_cell_number(df, 'CORRESPONDANT')
     if 'DUREE' in df.columns:
         df["DUREE"] = df["DUREE"].fillna("0")
+    if 'DIRECTION' in df.columns:
+        df['DIRECTION'] = df['DIRECTION'].fillna("INDETERMINE")
+        df['DIRECTION'] = df['DIRECTION'].str.upper()
     if 'IMEI' in df.columns:
         df['IMEI'] = df['IMEI'].fillna("INDETERMINE")
-        df['IMEI'] = df['IMEI'].astype(str)
         df["IMEI"] = df["IMEI"].apply(clean_number)
     if 'IMSI' in df.columns:
-        df['IMSI'] = df['IMSI'].fillna("INDETERMINE")
         df["IMSI"] = df["IMSI"].astype('str')
         df['IMSI'] = df['IMSI'].apply(clean_number)
     if 'CIBLE' in df.columns:
@@ -53,11 +49,11 @@ def preprocess_data(file1):
     # Nettoyer la colonne ADRESSE
     df['ADRESSE'] = df['ADRESSE'].str.replace(r'\s+', ' ', regex=True).str.strip()
     df['ADRESSE'] = df['ADRESSE'].str.upper()
-    deleted_columns = ['DATE', 'TYPE CORRESPONDANT', 'COMP.', 'EFFICACITE' , 'CELLID', 'ADRESSE IP VO WIFI', 'PORT SOURCE VO WIFI', 'ADRESSE2','ADRESSE3','ADRESSE4', 'ADRESSE5', 'PAYS', 'TYPE-COORD', 'CODE POSTAL']
+    df['ADRESSE'] = df['ADRESSE'].apply(reset_accent)
+    deleted_columns = ['TYPE CORRESPONDANT', 'COMP.', 'EFFICACITE' , 'CELLID', 'ADRESSE IP VO WIFI', 'PORT SOURCE VO WIFI', 'ADRESSE2','ADRESSE3','ADRESSE4', 'ADRESSE5', 'PAYS', 'TYPE-COORD', 'CODE POSTAL']
     df.drop(columns=deleted_columns, inplace=True, errors='ignore')
-    rename_dict = {"TYPE": "TYPE D'APPEL", "CIBLE": "ABONNE", "X": "LATITUDE", "Y": "LONGITUDE", "converted_date": "DATE", "Année": "ANNEE", "Mois": "MOIS", "Heure": "HEURE", "Jour de la semaine": "JOUR DE LA SEMAINE"
+    rename_dict = {"TYPE": "TYPE D'APPEL", "CIBLE": "ABONNE", "X": "LATITUDE", "Y": "LONGITUDE", "converted_date": "DATE", "Années": "ANNEE", "Mois": "MOIS", "Heure": "HEURE", "Jour de la semaine": "JOUR DE LA SEMAINE"
     }
-    # Renommer uniquement les colonnes présentes dans le DataFrame
     df.rename(columns={k: v for k, v in rename_dict.items() if k in df.columns}, inplace=True)
     df.fillna("INDETERMINE", inplace=True)
     return df
