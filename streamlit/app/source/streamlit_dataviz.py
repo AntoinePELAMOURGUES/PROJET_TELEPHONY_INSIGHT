@@ -44,7 +44,10 @@ def count_corr(df):
 
 def plot_correspondant_bar(df):
     try:
+        # **Important:** Convertir 'CORRESPONDANT' en chaîne de caractères *avant* tout regroupement
         df['CORRESPONDANT'] = df['CORRESPONDANT'].astype(str)
+        print(f"Type de données de 'CORRESPONDANT' après conversion: {df['CORRESPONDANT'].dtype}") # Ajout de la vérification du type
+        df['CORRESPONDANT'] = df['CORRESPONDANT'].str.strip() # Suppression des espaces
 
         # 1. Compter le nombre total de communications par correspondant (sans tenir compte du type d'appel)
         city_count = df.groupby('CORRESPONDANT').size().reset_index(name='TOTAL_COMS')
@@ -74,9 +77,9 @@ def plot_correspondant_bar(df):
         grouped_counts = grouped_counts.sort_values(by='TOTAL_COMS', ascending=False)
 
         # Créer le graphique avec Plotly Express
-        fig = px.bar(grouped_counts, x="CORRESPONDANT", y="NBRE COMS",
+        fig = px.bar(grouped_counts, x=grouped_counts['CORRESPONDANT'].astype(str), y="NBRE COMS",
                      color="TYPE D'APPEL", barmode='group',
-                     category_orders={"CORRESPONDANT": top_10_list})  # Important pour l'ordre
+                     category_orders={"CORRESPONDANT": [str(x) for x in top_10_list]})
 
         # Ajustement de la mise en page (optionnel)
         fig.update_layout(xaxis_tickangle=-45)
