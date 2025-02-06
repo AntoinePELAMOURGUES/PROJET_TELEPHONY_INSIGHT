@@ -31,7 +31,7 @@ def count_corr(df):
         # Filtrer pour garder uniquement les correspondants ayant 11 ou 12 caractères
         correspondant_counts = correspondant_counts[correspondant_counts['CORRESPONDANT'].str.len().isin([11, 12])]
         total_contacts = correspondant_counts['NBRE COMS'].sum()
-        # Calculer le pourcentage et arrondir à un chiffre après la virgule
+        # Calculer le POURCENTAGE et arrondir à un chiffre après la virgule
         correspondant_counts['POURCENTAGE'] = ((correspondant_counts['NBRE COMS'] / total_contacts) * 100).round(1)
         # Trier par nombre de contacts du plus élevé au plus bas
         correspondant_counts = correspondant_counts.sort_values(by='NBRE COMS', ascending=False)
@@ -80,19 +80,12 @@ def plot_city_bar(df):
     try:
         # Compter le nombre de contacts par correspondant
         city_counts = df['VILLE'].value_counts().reset_index()
-        city_counts.columns = ['VILLE', 'NBRE DEC']
+        city_counts.columns = ['VILLE', 'DECLENCHEMENTS']
         city_counts = city_counts[city_counts['VILLE'] != 'INDETERMINE']
-        fig = px.bar(city_counts.head(10), x='VILLE', y='NBRE DEC',
+        fig = px.bar(city_counts.head(10), x='VILLE', y='DECLENCHEMENTS',
                      title='Nombre de déclenchement par ville (Top 10)',
-                     hover_data=['NBRE DEC'],  # Inclure TOTAL_COMS dans les informations au survol
-                     labels={'VILLE': 'Ville', 'NBRE DEC': 'Nombre de Déclenchements'})
-        # Mise en forme des barres
-        fig.update_traces(
-            marker_line_width=1,  # Ajout d'un contour noir
-            marker_line_color="black",
-            width=0.4,  # Réduction de la largeur des barres
-            insidetextanchor="middle"
-        )
+                     hover_data=['DECLENCHEMENTS'],  # Inclure TOTAL_COMS dans les informations au survol
+                     labels={'VILLE': 'Ville', 'DECLENCHEMENTS': 'Déclenchements'})
         # Ajustement de la mise en page
         fig.update_layout(
             xaxis_tickangle=-45,  # Inclinaison des labels de l'axe X
@@ -231,11 +224,11 @@ def comm_histo_hour(df):
 def adresse_count(df):
     try:
        adresse_counts = df['ADRESSE'].value_counts().reset_index()
-       adresse_counts.columns = ['ADRESSE', 'NBRE DECLENCHEMENTS']
+       adresse_counts.columns = ['ADRESSE', 'DECLENCHEMENTS']
        adresse_counts.dropna(axis=0, inplace=True)  # Supprimer les lignes sans adresse
-       total_contacts = adresse_counts['NBRE DECLENCHEMENTS'].sum()
-       adresse_counts['Pourcentage'] = ((adresse_counts['NBRE DECLENCHEMENTS'] / total_contacts) * 100).round(1)
-       adresse_counts.sort_values(by='NBRE DECLENCHEMENTS', ascending=False, inplace=True)
+       total_contacts = adresse_counts['DECLENCHEMENTS'].sum()
+       adresse_counts['POURCENTAGE'] = ((adresse_counts['DECLENCHEMENTS'] / total_contacts) * 100).round(1)
+       adresse_counts.sort_values(by='DECLENCHEMENTS', ascending=False, inplace=True)
        return adresse_counts
     except Exception as e:
        print(f"Erreur lors du comptage des adresses: {e}")
@@ -285,13 +278,13 @@ def geocode_address_datagouv(address):
 def carto_adresse_srr(df):
     try:
         adress_count = adresse_count(df)  # Compter les adresses
-        df_merged = adress_count.merge(df, how='left', left_on="ADRESSE", right_on='Adresse')
+        df_merged = adress_count.merge(df, how='left', left_on="ADRESSE", right_on='ADRESSE')
         # Appliquer la conversion des coordonnées sur chaque ligne
         df_merged[['LATITUDE', 'LONGITUDE']] = df_merged.apply(lambda row: gauss_laborde_to_wgs84(row['COORDONNEE X'], row['COORDONNEE Y']), axis=1, result_type='expand')
         fig = px.scatter_map(df_merged,
                             lat="LATITUDE", lon="LONGITUDE",
-                            color="Pourcentage", size="Nombre de déclenchement",
-                            hover_name="Adresse",
+                            color="POURCENTAGE", size="DECLENCHEMENTS",
+                            hover_name="ADRESSE",
                             size_max=60, zoom=10,
                             color_continuous_scale=px.colors.sequential.Bluered,
                             map_style="carto-positron")
@@ -306,7 +299,7 @@ def carto_adresse_orre(df):
     try:
         fig = px.scatter_map(df,
                             lat="LATITUDE", lon="LONGITUDE",
-                            color="Pourcentage", size="Nombre de déclenchement",
+                            color="POURCENTAGE", size="Nombre de déclenchement",
                             hover_name="ADRESSE",
                             size_max=60, zoom=10,
                             color_continuous_scale=px.colors.sequential.Bluered,
@@ -323,7 +316,7 @@ def carto_adresse_tcoi(df):
             df,
             lat="LATITUDE",
             lon="LONGITUDE",
-            color="Pourcentage",
+            color="POURCENTAGE",
             size="NBRE DECLENCHEMENTS",
             hover_name="ADRESSE",
             size_max=60,
@@ -583,10 +576,10 @@ def visualisation_data(df, operateur: str):
         # Convertir les colonnes en types appropriés si nécessaire
         new_df['LATITUDE'] = pd.to_numeric(new_df['LATITUDE'], errors='coerce')
         new_df['LONGITUDE'] = pd.to_numeric(new_df['LONGITUDE'], errors='coerce')
-        new_df['Pourcentage'] = pd.to_numeric(new_df['Pourcentage'], errors='coerce')
+        new_df['POURCENTAGE'] = pd.to_numeric(new_df['POURCENTAGE'], errors='coerce')
         new_df['NBRE DECLENCHEMENTS'] = pd.to_numeric(new_df['NBRE DECLENCHEMENTS'], errors='coerce')
         # Supprimer les lignes avec des valeurs manquantes dans les colonnes critiques
-        new_df.dropna(subset=['LATITUDE', 'LONGITUDE', 'Pourcentage', 'NBRE DECLENCHEMENTS'], inplace=True)
+        new_df.dropna(subset=['LATITUDE', 'LONGITUDE', 'POURCENTAGE', 'NBRE DECLENCHEMENTS'], inplace=True)
         carto = carto_adresse_tcoi(new_df)
         if carto is not None:
             st.plotly_chart(carto)
