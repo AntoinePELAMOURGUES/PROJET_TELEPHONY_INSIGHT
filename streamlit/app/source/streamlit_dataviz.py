@@ -45,32 +45,48 @@ def count_corr(df):
 def plot_correspondant_bar(df):
     try:
         df['CORRESPONDANT'] = df['CORRESPONDANT'].astype(str)
+
         # 1. Compter le nombre total de communications par correspondant (sans tenir compte du type d'appel)
         city_count = df.groupby('CORRESPONDANT').size().reset_index(name='TOTAL_COMS')
+
         # 2. Filtrer pour garder uniquement les correspondants ayant 11 ou 12 caractères
         city_count = city_count[city_count['CORRESPONDANT'].str.len().isin([11, 12])]
+
         # 3. Trier par nombre total de communications et prendre les 10 premiers
-        top_10_correspondants = city_count.sort_values(by='TOTAL_COMS', ascending=False).head(10)['CORRESPONDANT'].tolist()
+        top_10_correspondants = city_count.sort_values(by='TOTAL_COMS', ascending=False).head(10) # On garde le DataFrame entier
+
+        # **Important:** Récupérer les 10 premiers *CORRESPONDANTS* sous forme de liste
+        top_10_list = top_10_correspondants['CORRESPONDANT'].tolist()
+
         # 4. Filtrer le DataFrame original pour ne garder que les 10 premiers correspondants
-        df_top_10 = df[df['CORRESPONDANT'].isin(top_10_correspondants)].copy()
+        df_top_10 = df[df['CORRESPONDANT'].isin(top_10_list)].copy()
+
         # 5. Grouper par correspondant ET type d'appel (maintenant qu'on a filtré les 10 premiers)
         grouped_counts = df_top_10.groupby(['CORRESPONDANT', 'TYPE D\'APPEL']).size().reset_index(name='NBRE COMS')
+
         # 6. Ajouter la colonne 'TOTAL_COMS' à grouped_counts
-        grouped_counts = pd.merge(grouped_counts, city_count, on='CORRESPONDANT', how='left')
+        grouped_counts = pd.merge(grouped_counts, top_10_correspondants[['CORRESPONDANT', 'TOTAL_COMS']], on='CORRESPONDANT', how='left')
+
         # 7. Calculer le pourcentage du nombre de communications par rapport au nombre total de communications *pour chaque correspondant*
         grouped_counts['POURCENTAGE'] = ((grouped_counts['NBRE COMS'] / grouped_counts['TOTAL_COMS']) * 100).round(1)
+
         # 8. Trier grouped_counts par 'TOTAL_COMS' de manière décroissante (important avant de créer le graphique)
         grouped_counts = grouped_counts.sort_values(by='TOTAL_COMS', ascending=False)
-        fig = px.histogram(grouped_counts, x="CORRESPONDANT", y="NBRE COMS",
-             color="TYPE D'APPEL", barmode='group')
-        # Ajustement de la mise en page
-        # fig.update_layout(
-        #     xaxis_tickangle=-45,  # Inclinaison des labels de l'axe X
-        #     )
+
+        # Créer le graphique avec Plotly Express
+        fig = px.bar(grouped_counts, x="CORRESPONDANT", y="NBRE COMS",
+                     color="TYPE D'APPEL", barmode='group',
+                     category_orders={"CORRESPONDANT": top_10_list})  # Important pour l'ordre
+
+        # Ajustement de la mise en page (optionnel)
+        fig.update_layout(xaxis_tickangle=-45)
+
         return fig
+
     except Exception as e:
         print(f"Erreur lors de la création du graphique à barres: {e}")
         return None
+
 
 def plot_city_bar(df):
     try:
