@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import re
-from preprocess_functions import *
+from .preprocess_functions import *
 
 
 def preprocess_data(file1):
