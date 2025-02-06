@@ -46,7 +46,7 @@ def plot_correspondant_bar(df):
     try:
         fig = px.bar(df, x='CORRESPONDANT', y='NBRE COMS',
                      title='Nombre de Communications par Correspondant (Top 10)',
-                     hover_data=['POURCENTAGE'],  # Inclure TOTAL_COMS dans les informations au survol
+                     hover_data=['POURCENTAGE'],
                      labels={'CORRESPONDANT': 'Correspondant', 'NBRE COMS': 'Nombre de Communications'})
         # Ajustement de la mise en page
         fig.update_layout(
@@ -422,10 +422,10 @@ def visualisation_data(df, operateur: str):
             )
         except:
             st.write("❌ Une erreur est survenue lors du téléchargement des données.")
-        st.markdown("---")
-        st.write("📊 Voici un graphique des 10 correspondants les plus fréquents :")
-        top_10_histo = plot_correspondant_bar(corr.head(10))
-        st.plotly_chart(top_10_histo)
+        # st.markdown("---")
+        # st.write("📊 Voici un graphique des 10 correspondants les plus fréquents :")
+        # top_10_histo = plot_correspondant_bar(corr.head(10))
+        # st.plotly_chart(top_10_histo)
     else:
         st.write("❌ La colonne 'Correspondant' n'est pas disponible.")
 
