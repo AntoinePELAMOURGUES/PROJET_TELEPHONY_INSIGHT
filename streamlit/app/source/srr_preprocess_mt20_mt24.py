@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from preprocess_functions import *
+from .preprocess_functions import *
 
 def preprocess_data(file1, file2, sheet_name=0):
     expected_columns_file1 = ["Type d'appel", "Abonné", "Correspondant", "Date", "Durée", "CIREF", "IMEI", "IMSI"]
