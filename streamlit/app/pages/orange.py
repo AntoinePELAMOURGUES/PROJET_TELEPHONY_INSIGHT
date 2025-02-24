@@ -1,6 +1,6 @@
 import streamlit as st
-from source.orre_preprocess_mt20_mt24 import preprocess_data
-from source.streamlit_dataviz import visualisation_data
+from src.orre_preprocess_mt20_mt24 import preprocess_data
+from src.streamlit_dataviz import visualisation_data
 
 # Réinitialiser la page si elle est chargée
 if 'page' not in st.session_state:

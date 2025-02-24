@@ -1,6 +1,6 @@
 import streamlit as st
-from source.srr_preprocess_mt20_mt24 import preprocess_data
-from source.streamlit_dataviz import visualisation_data
+from src.srr_preprocess_mt20_mt24 import preprocess_data
+from src.streamlit_dataviz import visualisation_data
 import pandas as pd
 
 # Réinitialiser la page si elle est chargée
