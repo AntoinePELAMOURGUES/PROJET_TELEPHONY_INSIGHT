@@ -321,6 +321,7 @@ def convert_df(df):
 def visualisation_data(df, operateur: str):
     # Gestion de la période temporelle
     if 'DATE' in df.columns:
+        df['DATE'] = pd.to_datetime(df['DATE'])
         st.write("ℹ️ La période complète de la FADET s'étend du {} au {}".format(df["DATE"].min(), df["DATE"].max()))
         st.markdown("---")
 
