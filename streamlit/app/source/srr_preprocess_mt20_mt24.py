@@ -3,30 +3,40 @@ import numpy as np
 from .preprocess_functions import *
 
 def preprocess_data(file1, file2, sheet_name=0):
+    # Définition des colonnes attendues pour chaque fichier
     expected_columns_file1 = ["Type d'appel", "Abonné", "Correspondant", "Date", "Durée", "CIREF", "IMEI", "IMSI"]
     expected_columns_file2 = ["CIREF", "Adresse", "Comp. adresse", "Code postal", "Bureau Distributeur", "Coordonnée X", "Coordonnée Y"]
+
+    # Lecture des fichiers Excel avec spécification des types de données
     df1 = pd.read_excel(file1, sheet_name=sheet_name, dtype={"Abonné": str, "Correspondant": str, "IMEI": str, "IMSI": str, "CIREF": str, "Durée": str, "Type d'appel" : str})
     df2 = pd.read_excel(file2, dtype= {"CIREF": str, "Adresse" : str, "Comp. adresse" : str, "Code postal" : str, "Bureau Distributeur" : str, "Coordonnée X": str, "Coordonnée Y": str})
+
+    # Filtrage des colonnes disponibles pour chaque DataFrame
     available_columns_1 = df1.columns.tolist()
-    # Filtrer les colonnes attendues qui sont disponibles
     filtered_columns_1 = list(set(expected_columns_file1) & set(available_columns_1))
     available_columns_2 = df2.columns.tolist()
-    # Filtrer les colonnes attendues qui sont disponibles
     filtered_columns_2 = list(set(expected_columns_file2) & set(available_columns_2))
+
+    # Sélection des colonnes filtrées
     df1 = df1[filtered_columns_1]
-    df1['Abonné'] = df1['Abonné'].ffill()
-    df1['Abonné'] = df1['Abonné'].bfill()
     df2 = df2[filtered_columns_2]
+
+    # Remplissage des valeurs manquantes dans la colonne 'Abonné'
+    df1['Abonné'] = df1['Abonné'].ffill().bfill()
+
+    # Fusion des DataFrames sur la colonne "CIREF"
     df = df1.merge(df2, on="CIREF", how="left")
-    deleted_columns =['Critère Recherché_x', 'Commentaire_x', '3ème interlocuteur', 'Nature Correspondant',
-       'Nature 3ème interlocuteur', 'GCI_x', 'EGCI_x', 'NGCI_x', 'Code PLMN',
-       'Volume de données montant', 'Volume de données descendant',"Opérateur d'itinérance", 'Indicateur RO', 'Décalage horaire',
-       'Service de Base', 'IPV4 VO Wifi', 'IPV6 VO Wifi',
-       'Port Source VO Wifi', 'Critère Recherché_y', 'Commentaire_y', 'GCI_y',
-       'EGCI_y', 'NGCI_y', 'Système', 'Nom du site', 'Code zone', 'Coordonnée Z', 'Début asso. CIREF/GCI', 'Fin asso. CIREF/GCI']
-    for i in df.columns.tolist():
-        if i in deleted_columns:
-            df.drop(i, axis=1, inplace=True)
+
+    # Suppression des colonnes non nécessaires
+    deleted_columns = ['Critère Recherché_x', 'Commentaire_x', '3ème interlocuteur', 'Nature Correspondant',
+                       'Nature 3ème interlocuteur', 'GCI_x', 'EGCI_x', 'NGCI_x', 'Code PLMN',
+                       'Volume de données montant', 'Volume de données descendant', "Opérateur d'itinérance", 'Indicateur RO', 'Décalage horaire',
+                       'Service de Base', 'IPV4 VO Wifi', 'IPV6 VO Wifi',
+                       'Port Source VO Wifi', 'Critère Recherché_y', 'Commentaire_y', 'GCI_y',
+                       'EGCI_y', 'NGCI_y', 'Système', 'Nom du site', 'Code zone', 'Coordonnée Z', 'Début asso. CIREF/GCI', 'Fin asso. CIREF/GCI']
+    df = df.drop(columns=[col for col in deleted_columns if col in df.columns])
+
+    # Application des fonctions de prétraitement
     if 'Date' in df.columns:
         df = transform_date(df, 'Date')
     if 'Abonné' in df.columns:
@@ -34,23 +44,22 @@ def preprocess_data(file1, file2, sheet_name=0):
     if 'Correspondant' in df.columns:
         df = clean_cell_number(df, 'Correspondant')
     if "Type d'appel" in df.columns:
-        df["Type d'appel"] = df["Type d'appel"].astype(str)
-        df["Type d'appel"] = df["Type d'appel"].str.upper()
-        df["Type d'appel"] = df["Type d'appel"].apply(reset_accent)
+        df["Type d'appel"] = df["Type d'appel"].astype(str).str.upper().apply(reset_accent)
     if 'Bureau Distributeur' in df.columns:
         df = clean_city(df, columns='Bureau Distributeur')
+
+    # Création d'une colonne d'adresse complète
     if 'Adresse' in df.columns and 'Code postal' in df.columns:
-        df['adresse_complete'] = df['Adresse'] + " " + df['Code postal'] + " " + df['VILLE']
-        df['adresse_complete'] = df['adresse_complete'].astype(str)
-        df['adresse_complete']= df['adresse_complete'].str.upper()
-        df['adresse_complete']= df['adresse_complete'].str.replace(r'\s+', ' ', regex=True)
-        df['adresse_complete'] = df['adresse_complete'].apply(reset_accent)
-        df = df.drop(columns=['Adresse', 'Comp. adresse', 'Code postal'])
-        df= df.rename(columns={'adresse_complete': 'Adresse'})
+        df['Adresse'] = df['Adresse'] + " " + df['Code postal'] + " " + df['VILLE']
+        df['Adresse'] = df['Adresse'].astype(str).str.upper().str.replace(r'\s+', ' ', regex=True).apply(reset_accent)
+        df = df.drop(columns=['Comp. adresse', 'Code postal'])
+
+    # Remplissage des valeurs manquantes
     df = df.fillna("INDETERMINE")
+
+    # Renommage des colonnes
     definitive_columns = ["Type d'appel", "Abonné", "Correspondant", "Date", "Durée", "CIREF", "IMEI", "IMSI", "Adresse", "Ville", 'Années', 'Mois', 'Heure', 'Jour de la semaine', "Coordonnée X", "Coordonnée Y"]
-    no_accent_columns = [reset_accent(i) for i in definitive_columns]
-    final_columns = [i.upper() for i in no_accent_columns]
-    for old_columns, new_columns in zip(definitive_columns, final_columns):
-        df = df.rename(columns={old_columns : new_columns})
+    final_columns = [reset_accent(col).upper() for col in definitive_columns]
+    df = df.rename(columns=dict(zip(definitive_columns, final_columns)))
+
     return df
