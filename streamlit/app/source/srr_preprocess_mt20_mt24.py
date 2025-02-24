@@ -8,7 +8,9 @@ def preprocess_data(file1, file2, sheet_name=0):
     # Lecture des fichiers Excel avec spécification des types de données
     df1 = pd.read_excel(file1, sheet_name=sheet_name, dtype={"Abonné": str, "Correspondant": str, "IMEI": str, "IMSI": str, "CIREF": str, "Durée": str, "Type d'appel" : str})
     df2 = pd.read_excel(file2, dtype= {"CIREF": str, "Adresse" : str, "Comp. adresse" : str, "Code postal" : str, "Bureau Distributeur" : str, "Coordonnée X": str, "Coordonnée Y": str})
-
+    # Supprimer des dernières lignes contenant des instructions SRR
+    df1 = df1.drop(df1.index[-1])
+    df2 = df2.drop(df2.index[-1])
     # Filtrage des colonnes disponibles pour chaque DataFrame
     available_columns_1 = df1.columns.tolist()
     filtered_columns_1 = list(set(expected_columns_file1) & set(available_columns_1))
@@ -52,12 +54,8 @@ def preprocess_data(file1, file2, sheet_name=0):
         df['Adresse'] = df['Adresse'].astype(str).str.upper().str.replace(r'\s+', ' ', regex=True).apply(reset_accent)
         df = df.drop(columns=['Comp. adresse', 'Code postal'])
 
-    # Remplissage des valeurs manquantes
-    df = df.fillna("INDETERMINE")
-
     # Renommage des colonnes
     definitive_columns = ["Type d'appel", "Abonné", "Correspondant", "Date", "Durée", "CIREF", "IMEI", "IMSI", "Adresse", "Ville", 'Années', 'Mois', 'Heure', 'Jour de la semaine', "Coordonnée X", "Coordonnée Y"]
     final_columns = [reset_accent(col).upper() for col in definitive_columns]
     df = df.rename(columns=dict(zip(definitive_columns, final_columns)))
-
     return df
