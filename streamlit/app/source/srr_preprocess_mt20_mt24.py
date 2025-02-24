@@ -14,8 +14,8 @@ def preprocess_data(file1, file2, sheet_name=0):
     # Filtrer les colonnes attendues qui sont disponibles
     filtered_columns_2 = list(set(expected_columns_file2) & set(available_columns_2))
     df1 = df1[filtered_columns_1]
-    df1.Abonné.ffill(inplace=True)
-    df1.Abonné.bfill(inplace=True)
+    df1['Abonné'] = df1['Abonné'].ffill()
+    df1['Abonné'] = df1['Abonné'].bfill()
     df2 = df2[filtered_columns_2]
     df = df1.merge(df2, on="CIREF", how="left")
     deleted_columns =['Critère Recherché_x', 'Commentaire_x', '3ème interlocuteur', 'Nature Correspondant',
@@ -28,7 +28,7 @@ def preprocess_data(file1, file2, sheet_name=0):
         if i in deleted_columns:
             df.drop(i, axis=1, inplace=True)
     if 'Date' in df.columns:
-        df = transform_date(df)
+        df = transform_date(df, 'Date')
     if 'Abonné' in df.columns:
         df = clean_cell_number(df, 'Abonné')
     if 'Correspondant' in df.columns:
@@ -47,7 +47,7 @@ def preprocess_data(file1, file2, sheet_name=0):
         df['adresse_complete'] = df['adresse_complete'].apply(reset_accent)
         df = df.drop(columns=['Adresse', 'Comp. adresse', 'Code postal'])
         df= df.rename(columns={'adresse_complete': 'Adresse'})
-    df.fillna("INDETERMINE", inplace=True)
+    df = df.fillna("INDETERMINE")
     definitive_columns = ["Type d'appel", "Abonné", "Correspondant", "Date", "Durée", "CIREF", "IMEI", "IMSI", "Adresse", "Ville", 'Années', 'Mois', 'Heure', 'Jour de la semaine', "Coordonnée X", "Coordonnée Y"]
     no_accent_columns = [reset_accent(i) for i in definitive_columns]
     final_columns = [i.upper() for i in no_accent_columns]
