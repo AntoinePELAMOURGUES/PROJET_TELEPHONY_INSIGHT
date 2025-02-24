@@ -1,5 +1,5 @@
 import pandas as pd
-from preprocess_functions import *
+from .preprocess_functions import *
 
 def preprocess_data(file1):
     # Liste des colonnes attendues
