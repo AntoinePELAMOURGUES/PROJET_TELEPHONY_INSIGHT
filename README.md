@@ -24,24 +24,24 @@ De nombreux enquêteurs n'ont pas une connaissance suffisante des outils de trai
         <td><img src="/img/2_infos.jpg" alt="Infos légales" width="600"></td>
     </tr>
     <tr>
-        <td><img src="/img/3_selection_fichiers.jpg.png" alt="Selection" width="600"></td>
-        <td><img src="/img/4_filtres" alt="Filtres" width="600"></td>
+        <td><img src="/img/3_selection_fichiers.jpg" alt="Selection" width="600"></td>
+        <td><img src="/img/4_filtres.jpg" alt="Filtres" width="600"></td>
     </tr>
     <tr>
-        <td><img src="/img/5_detail_coms.jpg.png" alt="Détail communications" width="600"></td>
-        <td><img src="/img/6_imei_imsi" alt="Visualisation IMEI / IMSI" width="600"></td>
+        <td><img src="/img/5_detail_coms.jpg" alt="Détail communications" width="600"></td>
+        <td><img src="/img/6_imei_imsi.jpg" alt="Visualisation IMEI / IMSI" width="600"></td>
     </tr>
     <tr>
-        <td><img src="/img/7_utilisation_1.jpg.png" alt="Utilisation de la ligne" width="600"></td>
-        <td><img src="/img/8_utilisation_2" alt="Utilisation de la ligne" width="600"></td>
+        <td><img src="/img/7_utilisation_1.jpg" alt="Utilisation de la ligne" width="600"></td>
+        <td><img src="/img/8_utilisation_2.jpg" alt="Utilisation de la ligne" width="600"></td>
     </tr>
     <tr>
-        <td><img src="/img/9_correspondants.jpg.png" alt="Correspondants d'une ligne" width="600"></td>
-        <td><img src="/img/11_localisation_1" alt="Adresse relais" width="600"></td>
+        <td><img src="/img/9_correspondants.jpg" alt="Correspondants d'une ligne" width="600"></td>
+        <td><img src="/img/11_localisation_1.jpg" alt="Adresse relais" width="600"></td>
     </tr>
     <tr>
-        <td><img src="/img/12_localisation_2.jpg.png" alt="Localisation dans le temps" width="600"></td>
-        <td><img src="/img/12_localisation_3" alt="Cartographie" width="600"></td>
+        <td><img src="/img/12_localisation_2.jpg" alt="Localisation dans le temps" width="600"></td>
+        <td><img src="/img/12_localisation_3.jpg" alt="Cartographie" width="600"></td>
     </tr>
 </table>
 
