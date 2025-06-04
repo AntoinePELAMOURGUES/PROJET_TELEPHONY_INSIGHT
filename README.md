@@ -50,3 +50,5 @@ De nombreux enquêteurs n'ont pas une connaissance suffisante des outils de trai
 Rendez vous sur le site :  <url>https://telephony-insights.streamlit.app/</url>
 
 Sélectionnez l'opérateur, le type de réquisition, chargez votre ou vos fichiers, le tour est joué !!
+
+⚠️ Dans l'attente de validation par l'ANFSI, le déploiement est mis en pause. 
